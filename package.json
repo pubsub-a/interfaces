@@ -7,13 +7,9 @@
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-concat": "^2.4.3",
-    "gulp-sourcemaps": "^1.3.0",
     "gulp-typescript": "^2.6.0",
     "gulp-watch": "^4.1.1",
-    "merge2": "^0.3.1",
-    "typescript": "^1.5.0-alpha",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.0.0"
+    "typescript": "^1.5.0-alpha"
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/gulp",
