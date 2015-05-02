@@ -9,6 +9,17 @@
     "gulp-concat": "^2.4.3",
     "gulp-typescript": "^2.6.0",
     "gulp-watch": "^4.1.1",
+    "rx": "^2.5.2",
+    "jasmine-core": "^2.2.0",
+    "jasmine-node": "^1.14.5",
+    "karma": "^0.12.31",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "^0.1.4",
+    "karma-jasmine": "^0.3.5",
+    "karma-jasmine-html-reporter": "^0.1.7",
+    "karma-phantomjs2-launcher": "^0.1.5",
+    "phantomjs": "^1.9.16",
     "typescript": "^1.5.0-alpha"
   },
   "scripts": {
