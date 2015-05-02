@@ -24,7 +24,7 @@ module.exports = function(config) {
 
       // implementation specific paths - adjust to your physical location
       // '../pubsub-micro/dist/pubsub-micro.js',
-      // '../pubsub-micro/tests/testloader.js'
+      // '../pubsub-micro/tests/spec-validation.js'
 
     ],
 
