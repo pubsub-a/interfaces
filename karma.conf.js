@@ -23,8 +23,12 @@ module.exports = function(config) {
       'tests/spec/test_common_basic_pubsub.js',
 
       // implementation specific paths - adjust to your physical location
-      // '../pubsub-micro/dist/pubsub-micro.js',
-      // '../pubsub-micro/tests/spec-validation.js'
+      '../pubsub-micro/dist/pubsub-micro.js',
+      '../pubsub-micro/tests/spec-validation.js',
+
+      '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
+      '../pubsub-server-node/dist/client/pubsub-node-client.js',
+      '../pubsub-server-node/tests/spec-validation.js'
 
     ],
 
