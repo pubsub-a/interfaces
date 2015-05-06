@@ -1,4 +1,5 @@
-function randomString() {
+function randomString(length) {
+  length = length || 8;
   var text = '';
   var allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 

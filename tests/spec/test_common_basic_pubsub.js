@@ -248,6 +248,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
           }, 1000); 
         };
 
+        // fail if this subscription is triggered
         var subscription = channel.subscribe('topic', function() {
           expect(false).toBe(true); 
           done();
