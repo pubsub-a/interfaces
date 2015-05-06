@@ -68,11 +68,15 @@ module PubSub {
     count: number;
   }
 
+  export interface disposeFunction {
+    (SubscriptionDisposedCallback): number;
+  }
+
   export interface SubscriptionDisposedCallback {
     /* callback once the subscription is disposed. Passes the number of remaining subscriptions.
       If a backend doesnt support that, the first argument should be undefined.
      */
-    (number): void;
+    (number?): void;
   }
 
   /**
