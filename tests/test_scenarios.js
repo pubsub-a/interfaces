@@ -7,14 +7,14 @@ function scenarioTwoEndpoints(getPubSubImplementation) {
   // the shared channel secret is known and identical at both sides
   var random = scenarioData.sharedChannelId = randomString();
 
-  scenarioData.pubsub1 = getPubSubImplementation();
+  scenarioData.pubsub1 = getPubSubImplementation(true);
   scenarioData.pubsub1.start(function() {
     scenarioData.channel1 = scenarioData.pubsub1.channel(random);
     scenarioData.remoteFactory1 = new PubSub.RxExtra.RemoteObservableFactory(scenarioData.channel1);
     firstReady.onCompleted();
   });
 
-  scenarioData.pubsub2 = getPubSubImplementation();
+  scenarioData.pubsub2 = getPubSubImplementation(false);
   scenarioData.pubsub2.start(function() {
     scenarioData.channel2 = scenarioData.pubsub2.channel(random);
     scenarioData.remoteFactory2 = new PubSub.RxExtra.RemoteObservableFactory(scenarioData.channel2);
