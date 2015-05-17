@@ -16,19 +16,19 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/rx/dist/rx.lite.js',
+      'tests/test_harness.js',
+      'tests/test_helper.js',
+      'tests/test_scenarios.js',
 
-      'tests/spec/test_helper.js',
-      'tests/spec/test_scenarios.js',
-      'tests/spec/test_harness.js',
       'tests/spec/test_common_basic_pubsub.js',
 
       // implementation specific paths - adjust to your physical location
       '../pubsub-micro/dist/pubsub-micro.js',
       '../pubsub-micro/tests/spec-validation.js',
 
-      '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
-      '../pubsub-server-node/dist/client/pubsub-node-client.js',
-      '../pubsub-server-node/tests/spec-validation.js'
+      // '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
+      // '../pubsub-server-node/dist/client/pubsub-node-client.js',
+      // '../pubsub-server-node/tests/spec-validation.js'
 
     ],
 

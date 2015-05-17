@@ -5,7 +5,7 @@ function scenarioTwoEndpoints(getPubSubImplementation) {
   var scenarioData = {};
 
   // the shared channel secret is known and identical at both sides
-  var random = scenarioData.sharedChannelId = PubSub.randomString();
+  var random = scenarioData.sharedChannelId = randomString();
 
   scenarioData.pubsub1 = getPubSubImplementation();
   scenarioData.pubsub1.start(function() {
