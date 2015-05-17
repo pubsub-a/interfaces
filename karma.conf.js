@@ -32,7 +32,11 @@ module.exports = function(config) {
       // the tests!
       '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
       '../pubsub-server-node/dist/client/pubsub-node-client.js',
-      '../pubsub-server-node/tests/spec-validation.js'
+      '../pubsub-server-node/tests/spec-validation.js',
+
+
+      // START RUNNING THE TESTS
+      'tests/run_tests.js',
 
     ],
 

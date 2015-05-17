@@ -1,11 +1,19 @@
 /**
-@describe Will execute all tests that apply to all PubSub implementations
-@param getPubSubImplementation -  A factory function that should return a fresh (untouched) pubsub
-  instance of type PubSub. This factory is called in the beforeEach() method before each test is run.
+@describe Any implementation may call this function to register itself for tests
 */
-function callAllTests(getPubSubImplementation) {
-  executeCommonBasicPubSubTests(getPubSubImplementation);
-}
+(function() {
+  var factories = [];
+  window.registerFactory = function (name, implementationFactory) {
+    factories.push({
+      name: name,
+      factory: implementationFactory
+    });
+  };
+
+  window.getFactories = function() {
+    return factories;
+  };
+})();
 
 /**
 Tests are loaded and executed for external implementations. To load an external implementation that
@@ -17,13 +25,3 @@ describe('Empty test', function() {
     expect(true).toBeTruthy();
   });
 });
-
-/*
-describe('PubSub.SocketIO.Client', function() {
-  var getPubSubImplementation = function() {
-    var pubsub = new PubSub.Network.SocketIO.Client ("pubsub+socketio://localhost:9800");
-    return pubsub;
-  };
-  callAllTests(getPubSubImplementation);
-});
-*/
