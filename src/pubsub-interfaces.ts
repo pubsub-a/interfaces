@@ -4,7 +4,7 @@ module PubSubA {
     start (callback?: IPubSubStartCallback, disconnect?: Function);
     stop (callback?: IPubSubStopCallback);
 
-    channel (name: string): IChannel;
+    channel (name: string, callback: IChannelReadyCallback): void;
   }
 
   /**
@@ -16,6 +16,10 @@ module PubSubA {
 
   export interface IPubSubStopCallback {
     (context: IPubSub, status: any);
+  }
+
+  export interface IChannelReadyCallback {
+    (channel: IChannel, context: IPubSub): void;
   }
 
   /**
