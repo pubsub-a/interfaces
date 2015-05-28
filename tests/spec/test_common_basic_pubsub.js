@@ -3,6 +3,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
   describe('should pass the common PubSub implementation tests ', function() {
 
     var pubsub;
+    var channel;
     var originalTimeout;
 
     // TODO doesnt get called for every "it" call
@@ -14,8 +15,10 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       pubsub = getPubSubImplementation();
       pubsub.start(function() {
         var random = randomString();
-        var channel = pubsub.channel(random);
-        done(); 
+        pubsub.channel(random, function(chan) {
+          channel = chan;
+          done(); 
+        });
       });
 
     });
@@ -30,7 +33,6 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
         done();
       };
 
-      channel = pubsub.channel(randomString());
       channel.subscribe ('myTopic', subscriptionFunction);
       channel.publish ('myTopic', 1);
 
@@ -41,7 +43,6 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       var promise1 = new Rx.AsyncSubject();
       var promise2 = new Rx.AsyncSubject();
       var num_additions = 100;
-      var channel = pubsub.channel(randomString());
 
       var token1 = channel.subscribe ('topic1', function(value) {
         count1 += value;
@@ -70,14 +71,13 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
         expect(count2).toBe(num_additions);
         done();
       });
-
     });
 
     it ('should fire multiple subscriptions', function(done) {
 
       var promise1 = new Rx.AsyncSubject();
       var promise2 = new Rx.AsyncSubject();
-      var channel = pubsub.channel(randomString());
+
 
       channel.subscribe ('myTopic', function() {
         promise1.onCompleted();
@@ -99,7 +99,6 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       var promise1 = new Rx.AsyncSubject();
       var promise2 = new Rx.AsyncSubject();
       var count = 0;
-      var channel = pubsub.channel(randomString());
 
       channel.subscribe('topic', function() {
         count += 1;
@@ -120,7 +119,6 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
     it ('should execute the subscriptions in the order they were added', function(done) {
       var sequence = new Rx.Subject ();
-      var channel = pubsub.channel(randomString());
 
       sequence.take(3).toArray().subscribe (function(result) {
         expect(result).toEqual([1, 2, 3]);
@@ -142,7 +140,6 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
     });
 
     it ('should return the correct subscription counts', function() {
-      var channel = pubsub.channel(randomString());
       var fn = function() {};
       var token1 = channel.subscribe ('myTopic', fn);
       expect(token1.count).toBe(1);
@@ -161,15 +158,18 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
     it ('should trigger a subscribe of a different channel instance but same channel name', function(done) {
       var channel_name = randomString();
-      var channel1 = pubsub.channel(channel_name);
 
-      channel1.subscribe('topic', function(value) {
-        expect(value).toBe(true);
-        done();
+      pubsub.channel(channel_name, function(channel1) {
+        pubsub.channel(channel_name, function(channel2) {
+  
+          channel1.subscribe('topic', function(value) {
+            expect(value).toBe(true);
+            done();
+          });
+
+          channel2.publish ('topic', true);
+        });
       });
-
-      var channel2 = pubsub.channel(channel_name);
-      channel2.publish ('topic', true);
     });
 
     it ('should trigger subscribes on different channel instances with same channel name', function(done) {
@@ -180,26 +180,29 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
       var channel_name = randomString();
 
-      var channel1 = pubsub.channel(channel_name);
-      channel1.subscribe('topic', function(value) {
-        expect(value).toBe(true);
-        called1 = true;
-        promise1.onCompleted();
-      });
+      pubsub.channel(channel_name, function(channel1) {
+        pubsub.channel(channel_name, function(channel2) {
 
-      var channel2 = pubsub.channel(channel_name);
-      channel2.subscribe('topic', function(value) {
-        expect(value).toBe(true);
-        called2 = true;
-        promise2.onCompleted();
-      });
+          channel1.subscribe('topic', function(value) {
+            expect(value).toBe(true);
+            called1 = true;
+            promise1.onCompleted();
+          });
 
-      channel2.publish ('topic', true);
+          channel2.subscribe('topic', function(value) {
+            expect(value).toBe(true);
+            called2 = true;
+            promise2.onCompleted();
+          });
 
-      Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
-        expect(called1).toBeTruthy();
-        expect(called2).toBeTruthy();
-        done();
+          channel2.publish ('topic', true);
+
+          Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
+            expect(called1).toBeTruthy();
+            expect(called2).toBeTruthy();
+            done();
+          });
+        });
       });
     });
 
@@ -207,58 +210,60 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
       it ('should not dispose all identical subscriptions if a single one is disposed', function(done) {
         var channel_name = randomString();
-        var channel = pubsub.channel(channel_name);
 
-        var subscription1 = channel.subscribe('topic', function(arg) {
-          expect(arg).toBeTruthy();
-          done();
+        pubsub.channel(channel_name, function(channel) {
+
+          var subscription1 = channel.subscribe('topic', function(arg) {
+            expect(arg).toBeTruthy();
+            done();
+          });
+
+          var subscription2 = channel.subscribe('topic', function() {});
+          subscription2.dispose();
+
+          channel.publish('topic', true);
         });
-
-        var subscription2 = channel.subscribe('topic', function() {});
-        subscription2.dispose();
-
-        channel.publish('topic', true);
 
       });
 
       it ('should throw an exception if the subscription is already disposed', function(done) {
         var channel_name = randomString();
-        var channel = pubsub.channel(channel_name);
+        pubsub.channel(channel_name, function(channel) {
 
-        var subscription = channel.subscribe('topic', function() {});
+          var subscription = channel.subscribe('topic', function() {});
 
-        expect(subscription.isDisposed).toEqual(false);
-        subscription.dispose();
-        expect(subscription.isDisposed).toEqual(true);
-        expect(function() { subscription.dispose(); }).toThrow();
-        done();
+          expect(subscription.isDisposed).toEqual(false);
+          subscription.dispose();
+          expect(subscription.isDisposed).toEqual(true);
+          expect(function() { subscription.dispose(); }).toThrow();
+          done();
+        });
       });
 
       it ('should run the callback after disposal', function(done) {
         var channel_name = randomString();
-        var channel = pubsub.channel(channel_name);
+        pubsub.channel(channel_name, function(channel) {
 
-        var callback = function(numSubscriptions) {
-          expect(true).toEqual(true);
-          // it should run after disposal so publishing shouldn't run our
-          // subscription function
-          channel.publish('topic', 1);
-          setTimeout(function() {
+          var callback = function(numSubscriptions) {
+            expect(true).toEqual(true);
+            // it should run after disposal so publishing shouldn't run our
+            // subscription function
+            channel.publish('topic', 1);
+            setTimeout(function() {
+              done();
+            }, 1000); 
+          };
+
+          // fail if this subscription is triggered
+          var subscription = channel.subscribe('topic', function() {
+            expect(false).toBe(true); 
             done();
-          }, 1000); 
-        };
+          });
 
-        // fail if this subscription is triggered
-        var subscription = channel.subscribe('topic', function() {
-          expect(false).toBe(true); 
-          done();
+          subscription.dispose(callback);
         });
-
-        subscription.dispose(callback);
       });
-
     });
-
   });
 
 }
