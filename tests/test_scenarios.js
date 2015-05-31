@@ -9,16 +9,20 @@ function scenarioTwoEndpoints(getPubSubImplementation) {
 
   scenarioData.pubsub1 = getPubSubImplementation(true);
   scenarioData.pubsub1.start(function() {
-    scenarioData.channel1 = scenarioData.pubsub1.channel(random);
-    scenarioData.remoteFactory1 = new PubSubA.RxExtra.RemoteObservableFactory(scenarioData.channel1);
-    firstReady.onCompleted();
+    scenarioData.pubsub1.channel(random, function(chan) {
+      scenarioData.channel1 = chan;
+      scenarioData.remoteFactory1 = new PubSubA.RxExtra.RemoteObservableFactory(scenarioData.channel1);
+      firstReady.onCompleted();
+    });
   });
 
   scenarioData.pubsub2 = getPubSubImplementation(false);
   scenarioData.pubsub2.start(function() {
-    scenarioData.channel2 = scenarioData.pubsub2.channel(random);
-    scenarioData.remoteFactory2 = new PubSubA.RxExtra.RemoteObservableFactory(scenarioData.channel2);
-    secondReady.onCompleted();
+    scenarioData.pubsub2.channel(random, function(chan) {
+      scenarioData.channel2 = chan;
+      scenarioData.remoteFactory2 = new PubSubA.RxExtra.RemoteObservableFactory(scenarioData.channel2);
+      secondReady.onCompleted();
+    });
   });
 
   var result = new Rx.AsyncSubject();
