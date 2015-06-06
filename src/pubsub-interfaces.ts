@@ -4,7 +4,7 @@ module PubSubA {
     start (callback?: IPubSubStartCallback, disconnect?: Function);
     stop (callback?: IPubSubStopCallback);
 
-    channel (name: string, callback: IChannelReadyCallback): void;
+    channel (name: string, callback?: IChannelReadyCallback): IChannel | void;
   }
 
   /**
