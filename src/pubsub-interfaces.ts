@@ -31,9 +31,6 @@ namespace PubSubA {
 
     publish<T> (topic: string, payload: T, callback?: IPublishReceivedCallback<T>): void;
 
-    // alias function, must point to publish
-    trigger<T> (topic: string, payload: T, callback?: IPublishReceivedCallback<T>): void;
-
     /**
     @description Subscribe to a topic.
     @param callback - If given, the callback will be executed after the server has
@@ -42,13 +39,10 @@ namespace PubSubA {
     subscribe<T> (topic: string, subscription: ISubscriptionFunc<T>,
       callback?: ISubscriptionRegisteredCallback<T>) : ISubscriptionToken;
 
-    // alias function, must point to subscribe
-    on<T> (topic: string, subscription: ISubscriptionFunc<T>,
-      callback?: ISubscriptionRegisteredCallback<T>) : ISubscriptionToken;
-
     // subscribe and dispose subscription after removal
     once<T> (topic: string, subscription: ISubscriptionFunc<T>,
       callback?: ISubscriptionRegisteredCallback<T>) : ISubscriptionToken;
+
   }
 
   /**
