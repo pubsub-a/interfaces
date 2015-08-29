@@ -4,7 +4,7 @@ namespace PubSubA {
     start (callback?: IPubSubStartCallback, disconnect?: Function);
     stop (callback?: IPubSubStopCallback);
 
-    channel (name: string, callback?: IChannelReadyCallback): IChannel | void;
+    channel (name: string, callback?: IChannelReadyCallback): IChannel;
   }
 
   /**
