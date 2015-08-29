@@ -40,8 +40,6 @@ channel.publish('myTopic', { message: 'Hello world!' });
 ### Object-instance based (no string topics)
 
 ```javascript
-var pubsub = new PubSubImplementation();
-
 // use any object instance or DOM node you like
 var myObject = {};
 
