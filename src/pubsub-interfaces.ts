@@ -36,12 +36,7 @@ namespace PubSubA {
     (channel: IChannel): void;
   }
 
-  /**
-  @description A communication channel.
-  */
-  export interface IChannel {
-
-    name: string;
+  export interface IPubSubOperations {
 
     publish<T> (topic: string, payload: T, callback?: IPublishReceivedCallback<T>): void;
 
@@ -57,6 +52,13 @@ namespace PubSubA {
     once<T> (topic: string, subscription: ISubscriptionFunc<T>,
       callback?: ISubscriptionRegisteredCallback<T>) : ISubscriptionToken;
 
+  }
+
+  /**
+  @description A communication channel used for topic grouping.
+  */
+  export interface IChannel extends IPubSubOperations {
+    name: string;
   }
 
   /**
