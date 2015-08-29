@@ -5,6 +5,20 @@ namespace PubSubA {
     stop (callback?: IPubSubStopCallback);
 
     channel (name: string, callback?: IChannelReadyCallback): IChannel;
+
+    /*
+    It is not possible to declare an interface member method as static in TypeScript - so bare in
+    mind that any implementation must have this .includeIn() method here as static method
+    includeIn: IPubSubOperationsMixin;
+    */
+  }
+
+  /**
+  @description includeIn function that has to be present on the implementation that implements
+    IPubSub.
+  */
+  export interface IPubSubOperationsMixin {
+    (obj: any, publish_name?: string, subscribe_name?: string): any;
   }
 
   /**
