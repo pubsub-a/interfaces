@@ -1,4 +1,4 @@
-module PubSubA {
+namespace PubSubA {
 
   export interface IPubSub {
     start (callback?: IPubSubStartCallback, disconnect?: Function);
