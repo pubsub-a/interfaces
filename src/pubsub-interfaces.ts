@@ -11,15 +11,15 @@ namespace PubSubA {
   @description Callback that fires when the main PubSub class is ready
   */ 
   export interface IPubSubStartCallback {
-    (context: IPubSub, error: any, status: any): void;
+    (status: any, error: any): void;
   }
 
   export interface IPubSubStopCallback {
-    (context: IPubSub, status: any);
+    (status: any, error: any);
   }
 
   export interface IChannelReadyCallback {
-    (channel: IChannel, context: IPubSub): void;
+    (channel: IChannel): void;
   }
 
   /**
