@@ -14,25 +14,17 @@ gulp.task('watch', function() {
   });
 });
 
-var defaultTsProject = function() { return ts.createProject({
-    target: 'ES5',
-    sortOutput: true,
-    noExternalResolve: true,
-    declarationFiles: true,
-    typescript: typescript
-  });
-};
+var defaultTsProject = ts.createProject('tsconfig.json', {
+  typescript: typescript,
+});
 
 gulp.task('tscompile-pubsub-interfaces', function() {
-  var tsResult = gulp.src([
-      './src/**/*.ts',
-    ])
-    .pipe(ts(defaultTsProject()));
+  var tsResult = defaultTsProject.src()
+    .pipe(ts(defaultTsProject));
 
   return tsResult.dts
     .pipe(concat('pubsub-a-interface.d.ts'))
     .pipe(gulp.dest('dist/'));
-
 });
 
 gulp.task('test', function (done) {

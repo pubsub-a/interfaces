@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "sourceMap": false,
+        "declarationFiles": true
+    },
+    "files": [
+        "src/pubsub-interfaces.ts"
+    ]
+}
