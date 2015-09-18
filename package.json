@@ -7,9 +7,8 @@
   "devDependencies": {
     "gulp": "^3.8.11",
     "gulp-concat": "^2.4.3",
-    "gulp-typescript": "latest",
+    "gulp-typescript": "^2.9.0",
     "gulp-watch": "^4.1.1",
-    "rx": "^2.5.2",
     "jasmine-core": "^2.2.0",
     "jasmine-node": "^1.14.5",
     "karma": "^0.12.31",
@@ -20,7 +19,8 @@
     "karma-jasmine-html-reporter": "^0.1.7",
     "karma-phantomjs2-launcher": "^0.1.5",
     "phantomjs": "^1.9.16",
-    "typescript": "^1.5.3"
+    "rx": "^2.5.2",
+    "typescript": "^1.6.2"
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/gulp",
