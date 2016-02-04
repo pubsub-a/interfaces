@@ -7,6 +7,6 @@
         "module": "commonjs"
     },
     "files": [
-        "src/pubsub-interfaces.ts"
+        "src/pubsub-a-interfaces.ts"
     ]
 }
