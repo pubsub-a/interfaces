@@ -31,7 +31,7 @@ module.exports = function(config) {
       // node-server implementation via socket.io - Make sure the node-server runs before executing
       // the tests!
       '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
-      '../pubsub-server-node/dist/client/pubsub-node-client.js',
+      '../pubsub-server-node/dist/pubsub-node-client.js',
       '../pubsub-server-node/tests/spec-validation.js',
 
 

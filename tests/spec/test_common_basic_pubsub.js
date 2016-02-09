@@ -17,7 +17,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
         var random = randomString();
         pubsub.channel(random, function(chan) {
           channel = chan;
-          done(); 
+          done();
         });
       });
 
@@ -91,7 +91,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
       Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
         expect(true).toBe(true);
-        done(); 
+        done();
       });
     });
 
@@ -122,7 +122,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
       sequence.take(3).toArray().subscribe (function(result) {
         expect(result).toEqual([1, 2, 3]);
-        done(); 
+        done();
       });
 
       channel.subscribe ('myTopic', function() {
@@ -161,7 +161,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
       pubsub.channel(channel_name, function(channel1) {
         pubsub.channel(channel_name, function(channel2) {
-  
+
           channel1.subscribe('topic', function(value) {
             expect(value).toBe(true);
             done();
@@ -251,12 +251,12 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
             channel.publish('topic', 1);
             setTimeout(function() {
               done();
-            }, 1000); 
+            }, 1000);
           };
 
           // fail if this subscription is triggered
           var subscription = channel.subscribe('topic', function() {
-            expect(false).toBe(true); 
+            expect(false).toBe(true);
             done();
           });
 
