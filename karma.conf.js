@@ -22,11 +22,12 @@ module.exports = function(config) {
 
       'tests/spec/test_common_basic_pubsub.js',
 
+      '../pubsub-micro/dist/pubsub-a-micro.js',
+
       // IMPLEMENTATION SPECIFIC PATHS - ADJUST TO YOUR PHYSICAL LOCATION
 
       // Reference implementation - PubSub.Micro
-      '../pubsub-micro/dist/pubsub-a-micro.js',
-      '../pubsub-micro/tests/spec-validation.js',
+      // '../pubsub-micro/tests/spec-validation.js',
 
       // node-server implementation via socket.io - Make sure the node-server runs before executing
       // the tests!

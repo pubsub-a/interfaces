@@ -3,16 +3,8 @@
 @param getPubSubImplementation -  A factory function that should return a fresh (untouched) pubsub
   instance of type PubSub. This factory is called in the beforeEach() method before each test is run.
 */
-(function() {
 
-  var factories = window.getFactories();
+var basicTests = require("./spec/test_common_basic_pubsub");
 
-  factories.forEach(function(factory) {
-
-    describe(factory.name, function() {
-      executeCommonBasicPubSubTests(factory.factory);
-    });
-
-  });
-
-})();
+var factory = require("../../pubsub-micro/tests/spec-validation.js");
+basicTests.executeCommonBasicPubSubTests(factory.factory);

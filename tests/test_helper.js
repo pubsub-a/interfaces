@@ -1,4 +1,4 @@
-window.randomString = function(length) {
+var randomString = function(length) {
   length = length || 8;
   var text = '';
   var allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -9,3 +9,6 @@ window.randomString = function(length) {
   return text;
 };
 
+module.exports = {
+    randomString: randomString
+};

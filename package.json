@@ -14,15 +14,13 @@
   "main": "dist/pubsub-a-interface.js",
   "typings": "dist/pubsub-a-interface.d.ts",
   "devDependencies": {
-    "jasmine-core": "^2.2.0",
-    "jasmine-node": "^1.14.5",
+    "chai": "^3.5.0",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.7",
     "karma-cli": "0.0.4",
     "karma-firefox-launcher": "^0.1.4",
-    "karma-jasmine": "^0.3.5",
-    "karma-jasmine-html-reporter": "^0.1.7",
     "karma-phantomjs2-launcher": "^0.1.5",
+    "mocha": "^2.4.5",
     "phantomjs": "^1.9.16",
     "rx": "^2.5.2",
     "typescript": "^1.7.5"
