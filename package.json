@@ -27,6 +27,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "test": "mocha tests/test.js"
   }
 }

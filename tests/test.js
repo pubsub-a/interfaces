@@ -6,5 +6,8 @@
 
 var basicTests = require("./spec/test_common_basic_pubsub");
 
-var factory = require("../../pubsub-micro/tests/spec-validation.js");
-basicTests.executeCommonBasicPubSubTests(factory.factory);
+try {
+    // pubsub-micro
+    var factory = require("../../pubsub-micro/tests/spec-validation.js");
+    basicTests.executeCommonBasicPubSubTests(factory.factory);
+} catch(err) {}
