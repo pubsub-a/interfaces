@@ -10,4 +10,15 @@ try {
     // pubsub-micro
     var factory = require("../../pubsub-micro/tests/spec-validation.js");
     basicTests.executeCommonBasicPubSubTests(factory.factory);
-} catch(err) {}
+} catch(err) {
+    console.log('Could not load pubsub-micro tests: ' + err);
+}
+
+try {
+    // pubsub-micro
+    var factory = require("../../pubsub-server-node/tests/spec-validation.js");
+    basicTests.executeCommonBasicPubSubTests(factory.factory);
+} catch(err) {
+    console.log('Could not load pubsub-server-node tests: ' + err);
+}
+
