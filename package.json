@@ -16,14 +16,16 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "karma": "^0.12.31",
+    "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.1.7",
     "karma-cli": "0.0.4",
     "karma-firefox-launcher": "^0.1.4",
+    "karma-mocha": "^1.1.1",
     "karma-phantomjs2-launcher": "^0.1.5",
-    "mocha": "^2.4.5",
+    "mocha": "^2.5.3",
     "phantomjs": "^1.9.16",
     "rx": "^2.5.2",
-    "typescript": "^1.7.5"
+    "typescript": "^1.8.10"
   },
   "scripts": {
     "build": "tsc",

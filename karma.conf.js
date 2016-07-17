@@ -10,7 +10,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['mocha', 'chai'],
 
 
     // list of files / patterns to load in the browser
@@ -18,26 +18,24 @@ module.exports = function(config) {
       'node_modules/rx/dist/rx.lite.js',
       'tests/test_harness.js',
       'tests/test_helper.js',
-      'tests/test_scenarios.js',
 
-      'tests/spec/test_common_basic_pubsub.js',
-
-      '../pubsub-micro/dist/pubsub-a-micro.js',
+      'tests/spec/*.js',
 
       // IMPLEMENTATION SPECIFIC PATHS - ADJUST TO YOUR PHYSICAL LOCATION
 
       // Reference implementation - PubSub.Micro
-      // '../pubsub-micro/tests/spec-validation.js',
+      '../pubsub-a-micro/dist/bundle/pubsub-a-micro.umd.js',
+      '../pubsub-a-micro/tests/spec-validation.js',
 
       // node-server implementation via socket.io - Make sure the node-server runs before executing
       // the tests!
-      '../pubsub-server-node/node_modules/socket.io-client/socket.io.js',
-      '../pubsub-server-node/dist/pubsub-node-client.js',
-      '../pubsub-server-node/tests/spec-validation.js',
+      '../pubsub-a-server-node/node_modules/socket.io-client/socket.io.js',
+      '../pubsub-a-server-node/dist/bundle/pubsub-a-node-client.umd.js',
+      '../pubsub-a-server-node/tests/spec-validation.js',
 
 
       // START RUNNING THE TESTS
-      'tests/run_tests.js',
+      'tests/test.js',
 
     ],
 
@@ -53,20 +51,16 @@ module.exports = function(config) {
     preprocessors: {
     },
 
-
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress', 'html'],
-
+    reporters: ['progress'],
 
     // web server port
     port: 9876,
 
-
     // enable / disable colors in the output (reporters and logs)
     colors: true,
-
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
@@ -74,16 +68,17 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: true,
+    autoWatch: false,
 
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'PhantomJS2', 'Firefox'],
+    // browsers: ['Chrome', 'PhantomJS2', 'Firefox'],
+    browsers: ['PhantomJS2'],
 
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false
+    singleRun: true
   });
 };

@@ -9,6 +9,8 @@ var randomString = function(length) {
   return text;
 };
 
-module.exports = {
-    randomString: randomString
-};
+if (typeof window === "undefined") {
+    module.exports = {
+        randomString: randomString
+    };
+}

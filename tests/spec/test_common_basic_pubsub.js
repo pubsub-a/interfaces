@@ -1,8 +1,9 @@
-var chai = require('chai');
-var testHelper = require('../test_helper');
-var Rx = require('rx');
-
-var expect = chai.expect;
+if (typeof window === "undefined") {
+  var chai = require('chai');
+  var randomString = require('../test_helper').randomString;
+  var Rx = require('rx');
+  var expect = chai.expect;
+}
 
 function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
@@ -17,7 +18,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       // increase the timeout
       pubsub = getPubSubImplementation();
       pubsub.start(function() {
-        var random = testHelper.randomString();
+        var random = randomString();
         pubsub.channel(random, function(chan) {
           channel = chan;
           done();
@@ -157,7 +158,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
     });
 
     it ('should trigger a subscribe of a different channel instance but same channel name', function(done) {
-      var channel_name = testHelper.randomString();
+      var channel_name = randomString();
 
       pubsub.channel(channel_name, function(channel1) {
         pubsub.channel(channel_name, function(channel2) {
@@ -178,7 +179,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       var called1 = false;
       var called2 = false;
 
-      var channel_name = testHelper.randomString();
+      var channel_name = randomString();
 
       pubsub.channel(channel_name, function(channel1) {
         pubsub.channel(channel_name, function(channel2) {
@@ -209,7 +210,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
     describe('dispose and cleanup methods', function() {
 
       it ('should not dispose all identical subscriptions if a single one is disposed', function(done) {
-        var channel_name = testHelper.randomString();
+        var channel_name = randomString();
 
         pubsub.channel(channel_name, function(channel) {
 
@@ -227,7 +228,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       });
 
       it ('should throw an exception if the subscription is already disposed', function(done) {
-        var channel_name = testHelper.randomString();
+        var channel_name = randomString();
         pubsub.channel(channel_name, function(channel) {
 
           var subscription = channel.subscribe('topic', function() {});
@@ -241,7 +242,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       });
 
       it ('should run the callback after disposal', function(done) {
-        var channel_name = testHelper.randomString();
+        var channel_name = randomString();
         pubsub.channel(channel_name, function(channel) {
 
           var callback = function(numSubscriptions) {
@@ -268,6 +269,8 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
 }
 
-module.exports = {
-  executeCommonBasicPubSubTests: executeCommonBasicPubSubTests
-};
+if (typeof window === "undefined") {
+  module.exports = {
+    executeCommonBasicPubSubTests: executeCommonBasicPubSubTests
+  };
+}
