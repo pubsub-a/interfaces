@@ -11,9 +11,7 @@ PubSub/A uses the so-called *topic-based Publish/Subscribe* with the additional 
 custom object instance (or DOM nodes) as message hubs.
 
 A [reference implementation written in TypeScript (but usable from plain JavaScript) is available
-here][reference-implementation], as well as a
-[network-transparent implementation][pubsub-server-node] that allows publish/subscribe across
-node.js and browser instances using WebSockets.
+here][reference-implementation].
 
 
 Quick syntax overview
@@ -24,17 +22,17 @@ Quick syntax overview
 ```javascript
 var pubsub = new PubSubImplementation();
 
-// channels are used to group topics
-var channel = pubsub.channel('mychannel');
+// channels are initialized asynchronously, provide a way to "namespace" topics
+pubsub.channel('mychannel', function(channel) {
 
-// subscribe
-channel.subscribe('myTopic', function(arg) {
-  console.log('I received a notification: ' + arg.message);
+    // subscribe
+    channel.subscribe('myTopic', function(arg) {
+      console.log('I received a notification: ' + arg.message);
+    });
+
+    // publish - you can pass any custom object as argument
+    channel.publish('myTopic', { message: 'Hello world!' });
 });
-
-// publish - you can pass any custom object as argument
-channel.publish('myTopic', { message: 'Hello world!' });
-
 ```
 
 ### Object-instance based (no string topics)
@@ -67,22 +65,20 @@ Implementations
 
 * [pubsub-micro] - A reference implementation written in TypeScript but usable from any JavaScript
   project
-* [pubsub-server-node] - A network-transparent implementation that can forward publish/subscribe
-  message through the web (via WebSockets) using a tiny node.js server
 
 
   [pubsub-pattern]: https://en.wikipedia.org/wiki/Publish–subscribe_pattern
   [reference-implementation]: https://github.com/pubsub-a/pubsub-micro
   [pubsub-micro]: https://github.com/pubsub-a/pubsub-micro
-  [pubsub-server-node]: https://github.com/pubsub-a/pubsub-server-node
 
 
 Test suite
 ----------
 
-This project includes a number of unit tests (using Jasmine and Karma) that can be used to verify
+This project includes a number of unit tests (using Mocha/Chai and Karma) that can be used to verify
 compatibility with the spec. To add you implementation, add a reference to the `karma.conf.js` file
-and register a factory that returns your PubSubImplemenation and start Karma.
+and register a factory that returns your PubSubImplemenation and start Karma. For node.js tests, see the
+`tests/test.js` file for how to extend the test suite with your implementation.
 
 
 Licensing
