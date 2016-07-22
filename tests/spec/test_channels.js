@@ -1,7 +1,7 @@
 if (typeof window === "undefined") {
     var chai = require('chai');
     var expect = chai.expect;
-    var Rx = require('rx');
+    var Rx = require('rxjs/Rx');
 }
 
 function executeChannelTests(getPubSubImplementation) {
@@ -26,21 +26,20 @@ function executeChannelTests(getPubSubImplementation) {
 
         it("should not share pubsub data between two channels of different name", function(done) {
             var channel1, channel2;
+            var channel1_ready = new Rx.AsyncSubject();
+            var channel2_ready = new Rx.AsyncSubject();
+
             // TODO use Promise/rxjs magic to start
-            var i = 2;
             pubsub.channel("channel1", function(chan) {
                 channel1 = chan;
-                i--;
-                go();
+                channel1_ready.complete();
             });
             pubsub.channel("channel2", function(chan) {
                 channel2 = chan;
-                i--;
-                go();
+                channel2_ready.complete();
             });
 
-            function go() {
-                if (i !== 0) return;
+            Rx.Observable.concat(channel1_ready, channel2_ready).subscribe(undefined, undefined, function() {
 
                 channel1.subscribe("foo", function() {
                     expect(true).to.be.true;
@@ -53,7 +52,7 @@ function executeChannelTests(getPubSubImplementation) {
                 });
 
                 channel1.publish("foo", {});
-            }
+            });
         });
 
         it("should have two channel instances with same name share the pubsub data", function(done) {

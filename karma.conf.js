@@ -15,7 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/rx/dist/rx.lite.js',
+      'node_modules/rxjs/bundles/Rx.js',
       'tests/test_harness.js',
       'tests/test_helper.js',
 

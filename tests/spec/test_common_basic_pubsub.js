@@ -1,7 +1,7 @@
 if (typeof window === "undefined") {
   var chai = require('chai');
   var randomString = require('../test_helper').randomString;
-  var Rx = require('rx');
+  var Rx = require('rxjs/Rx');
   var expect = chai.expect;
 }
 
@@ -48,13 +48,13 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       var token1 = channel.subscribe ('topic1', function(value) {
         count1 += value;
         if (count1 >= num_additions)
-          promise1.onCompleted();
+          promise1.complete();
       });
 
       var token2 = channel.subscribe ('topic2', function(value) {
         count2 += value;
         if (count2 >= num_additions)
-          promise2.onCompleted();
+          promise2.complete();
       });
 
       var range = Rx.Observable.range(1, num_additions);
@@ -67,7 +67,7 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
         channel.publish ('topic2', 1);
       });
 
-      Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
+      Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, function() {
         expect(count1).to.equal(num_additions);
         expect(count2).to.equal(num_additions);
         done();
@@ -81,24 +81,22 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
 
 
       channel.subscribe ('myTopic', function() {
-        promise1.onCompleted();
+        promise1.complete();
       });
 
       channel.subscribe ('myTopic', function() {
-        promise2.onCompleted();
+        promise2.complete();
       });
 
       channel.publish ('myTopic', 1);
 
-      Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
+      Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, function() {
         expect(true).to.be.true;
         done();
       });
     });
 
     it ('should fire each subscription only once if multiple subscriptions are available', function(done) {
-      var promise1 = new Rx.AsyncSubject();
-      var promise2 = new Rx.AsyncSubject();
       var count = 0;
 
       channel.subscribe('topic', function() {
@@ -127,14 +125,14 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
       });
 
       channel.subscribe ('myTopic', function() {
-        sequence.onNext(1);
+        sequence.next(1);
       });
       channel.subscribe ('myTopic', function() {
-        sequence.onNext(2);
+        sequence.next(2);
       });
       channel.subscribe ('myTopic', function() {
-        sequence.onNext(3);
-        sequence.onCompleted();
+        sequence.next(3);
+        sequence.complete();
       });
 
       channel.publish ('myTopic', 1);
@@ -187,18 +185,18 @@ function executeCommonBasicPubSubTests(getPubSubImplementation) {
           channel1.subscribe('topic', function(value) {
             expect(value).to.be.true;
             called1 = true;
-            promise1.onCompleted();
+            promise1.complete();
           });
 
           channel2.subscribe('topic', function(value) {
             expect(value).to.be.true;
             called2 = true;
-            promise2.onCompleted();
+            promise2.complete();
           });
 
           channel2.publish ('topic', true);
 
-          Rx.Observable.concat(promise1, promise2).subscribeOnCompleted(function() {
+          Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, function() {
             expect(called1).to.be.true;
             expect(called2).to.be.true;
             done();
