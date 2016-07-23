@@ -15,7 +15,7 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/rxjs/bundles/Rx.js',
+      'node_modules/rxjs/bundles/Rx.umd.js',
       'tests/test_harness.js',
       'tests/test_helper.js',
 
@@ -73,8 +73,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    // browsers: ['Chrome', 'PhantomJS2', 'Firefox'],
-    browsers: ['PhantomJS2'],
+    browsers: ['Chrome', 'PhantomJS2', 'Firefox'],
 
 
     // Continuous Integration mode
