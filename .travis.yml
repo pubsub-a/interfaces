@@ -1,5 +1,6 @@
 sudo: false
 language: javascript
+node_js: "6.1"
 
 install:
   # newer npm spinner is just a pain and will mess up in the logfiles
