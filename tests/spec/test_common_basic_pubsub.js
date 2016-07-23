@@ -5,18 +5,17 @@ if (typeof window === "undefined") {
   var expect = chai.expect;
 }
 
-function executeCommonBasicPubSubTests(getPubSubImplementation) {
+function executeCommonBasicPubSubTests(factory) {
 
-  describe('should pass the common PubSub implementation tests ', function() {
+  describe('[' + factory.name + '] should pass the common PubSub implementation tests ', function() {
 
     var pubsub;
     var channel;
-    var originalTimeout;
 
     // TODO doesnt get called for every "it" call
     beforeEach (function(done) {
       // increase the timeout
-      pubsub = getPubSubImplementation();
+      pubsub = factory.getPubSubImplementation();
       pubsub.start(function() {
         var random = randomString();
         pubsub.channel(random, function(chan) {

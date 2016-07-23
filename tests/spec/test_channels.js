@@ -4,9 +4,16 @@ if (typeof window === "undefined") {
     var Rx = require('rxjs/Rx');
 }
 
-function executeChannelTests(getPubSubImplementation) {
+function executeChannelTests(factory) {
 
-    describe('should pass common channel tests', function() {
+    describe('[' + factory.name + '] should pass common channel tests', function() {
+
+        beforeEach(function(done) {
+            pubsub = factory.getPubSubImplementation();
+            pubsub.start(function() {
+                done();
+            });
+        });
 
         function expectToBeAChannel(channel) {
             expect(channel.publish).to.be.a.function;
@@ -14,13 +21,6 @@ function executeChannelTests(getPubSubImplementation) {
             expect(channel.name).to.be.a.string;
             expect(channel.name).length.to.be.above(0);
         }
-
-        beforeEach(function(done) {
-            pubsub = getPubSubImplementation();
-            pubsub.start(function() {
-                done();
-            });
-        });
 
         it("should create a channel asynchronously", function(done) {
             var channel;

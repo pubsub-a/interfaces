@@ -40,12 +40,6 @@ function runTests() {
 
     facs.forEach(function(factory) {
 
-        // displays a log message whenever the implementation factory is retrieved - usefull for debugging
-        var getImpl = function() {
-            console.info("Implementation: " + factory.name);
-            return new factory.factory();
-        };
-
         var executeCommonBasicPubSubTests;
         var executeChannelTests;
 
@@ -57,8 +51,8 @@ function runTests() {
             executeChannelTests = window.executeChannelTests;
         }
 
-        executeCommonBasicPubSubTests(getImpl);
-        executeChannelTests(getImpl);
+        executeCommonBasicPubSubTests(factory);
+        executeChannelTests(factory);
     });
 }
 
