@@ -4,7 +4,8 @@
         "outDir": "dist",
         "sourceMap": false,
         "declaration": true,
-        "module": "commonjs"
+        "module": "commonjs",
+        "strictNullChecks": true
     },
     "files": [
         "src/pubsub-a-interface.ts"

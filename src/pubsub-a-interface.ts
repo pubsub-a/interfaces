@@ -1,8 +1,10 @@
-export interface IPubSub {
-  start(callback?: IPubSubStartCallback, disconnect?: Function);
-  stop(callback?: IPubSubStopCallback);
+import {Promise} from "es6-promise";
 
-  channel(name: string, callback?: IChannelReadyCallback): IChannel;
+export interface IPubSub {
+  start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
+  stop(callback?: IPubSubStopCallback): Promise<void>;
+
+  channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
 
   /*
   It is not possible to declare an interface member method as static in TypeScript - so bare in

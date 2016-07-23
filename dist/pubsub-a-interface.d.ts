@@ -1,7 +1,8 @@
+/// <reference types="es6-promise" />
 export interface IPubSub {
-    start(callback?: IPubSubStartCallback, disconnect?: Function): any;
-    stop(callback?: IPubSubStopCallback): any;
-    channel(name: string, callback?: IChannelReadyCallback): IChannel;
+    start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
+    stop(callback?: IPubSubStopCallback): Promise<void>;
+    channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
 }
 /**
 @description includeIn function that has to be present on the implementation that implements
