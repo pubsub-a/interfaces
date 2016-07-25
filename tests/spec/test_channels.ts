@@ -1,10 +1,12 @@
+
 if (typeof window === "undefined") {
-    var chai = require('chai');
-    var expect = chai.expect;
+    var c = require("chai");
+    var expect = c.expect;
     var Rx = require('rxjs/Rx');
 }
 
 function executeChannelTests(factory) {
+    var pubsub;
 
     describe('[' + factory.name + '] should pass common channel tests', function() {
 
@@ -16,9 +18,9 @@ function executeChannelTests(factory) {
         });
 
         function expectToBeAChannel(channel) {
-            expect(channel.publish).to.be.a.function;
-            expect(channel.subscribe).to.be.a.function;
-            expect(channel.name).to.be.a.string;
+            expect(channel.publish).to.be.a('function');
+            expect(channel.subscribe).to.be.a('function');
+            expect(channel.name).to.be.a('string');
             expect(channel.name).length.to.be.above(0);
         }
 
@@ -35,7 +37,7 @@ function executeChannelTests(factory) {
             var channel;
 
             var promise = pubsub.channel("foo");
-            expect(promise).to.be.defined;
+            expect(promise).to.be.ok;
             expect(promise.then).to.be.a("function");
             expect(promise.catch).to.be.a("function");
 

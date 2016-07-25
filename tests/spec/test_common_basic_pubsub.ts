@@ -1,8 +1,8 @@
 if (typeof window === "undefined") {
-  var chai = require('chai');
+  var c = require('chai');
+  var expect = c.expect;
   var randomString = require('../test_helper').randomString;
   var Rx = require('rxjs/Rx');
-  var expect = chai.expect;
 }
 
 function executeCommonBasicPubSubTests(factory) {
