@@ -39,6 +39,6 @@
     "watch-tests": "tsc -p tests",
     "node-tests": "mocha tests/test.js",
     "browser-tests": "karma start",
-    "test": "npm run node-tests && npm run browser-tests"
+    "test": "npm run build-tests && npm run node-tests && npm run browser-tests"
   }
 }
