@@ -5,7 +5,7 @@ if (typeof window === "undefined") {
     var Rx = require('rxjs/Rx');
 }
 
-function executeChannelTests(factory) {
+const executeChannelTests = (factory) => {
     var pubsub;
 
     describe('[' + factory.name + '] should pass common channel tests', function() {
