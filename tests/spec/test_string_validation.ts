@@ -37,7 +37,6 @@ var executeStringValidationTests = (factory) => {
 
         it("should make sure a channel name may not be longer than 255 characters", () => {
             let overlong_name = randomValidChannelOrTopicName(256);
-            console.dir(overlong_name);
             expect(() => pubsub.channel(overlong_name)).to.throw();
         });
     });
