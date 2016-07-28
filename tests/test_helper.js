@@ -10,7 +10,8 @@ var randomString = function(length) {
 };
 
 var randomValidChannelOrTopicName = function(length) {
-  length = length || 8;
+  if(!length)
+    length = Math.ceil(Math.random() * 255);
   var text = '';
   var allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:_/-';
 

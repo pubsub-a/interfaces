@@ -2,6 +2,7 @@ if (typeof window === "undefined") {
     var c = require('chai');
     var expect = c.expect;
     var randomString = require('../test_helper').randomString;
+    var randomValidChannelOrTopicName = require('../test_helper').randomValidChannelOrTopicName;
     var Rx = require('rxjs/Rx');
 }
 
@@ -16,9 +17,9 @@ const executeCommonBasicPubSubTests = (factory) => {
         beforeEach(done => {
             // increase the timeout
             pubsub = factory.getPubSubImplementation();
-            pubsub.start(function() {
-                var random = randomString();
-                pubsub.channel(random, function(chan) {
+            pubsub.start(() => {
+                var random = randomValidChannelOrTopicName();
+                pubsub.channel(random, (chan) => {
                     channel = chan;
                     done();
                 });

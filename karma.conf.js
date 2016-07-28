@@ -19,7 +19,7 @@ module.exports = function(config) {
       'tests/test_harness.js',
       'tests/test_helper.js',
 
-      'tests/spec/*.js',
+      'tests/spec/**/*.js',
 
       // IMPLEMENTATION SPECIFIC PATHS - ADJUST TO YOUR PHYSICAL LOCATION
 
