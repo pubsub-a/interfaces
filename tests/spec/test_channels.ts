@@ -6,11 +6,11 @@ if (typeof window === "undefined") {
 }
 
 const executeChannelTests = (factory) => {
-    var pubsub;
+    let pubsub;
 
-    describe('[' + factory.name + '] should pass common channel tests', function() {
+    describe(`[${factory.name}] should pass common channel tests`, () => {
 
-        beforeEach(function(done) {
+        beforeEach(done => {
             pubsub = factory.getPubSubImplementation();
             pubsub.start(function() {
                 done();
