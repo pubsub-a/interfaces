@@ -42,17 +42,21 @@ function runTests() {
 
         var executeCommonBasicPubSubTests;
         var executeChannelTests;
+        var executeStringValidationTests;
 
         if (typeof window === "undefined") {
             executeCommonBasicPubSubTests = require("./spec/test_common_basic_pubsub").executeCommonBasicPubSubTests;
             executeChannelTests = require("./spec/test_channels").executeChannelTests;
+            executeStringValidationTests = require("./spec/test_string_validation").executeStringValidationTests;
         } else {
             executeCommonBasicPubSubTests = window.executeCommonBasicPubSubTests;
             executeChannelTests = window.executeChannelTests;
+            executeStringValidationTests = window.executeStringValidationTests;
         }
 
         executeCommonBasicPubSubTests(factory);
         executeChannelTests(factory);
+        executeStringValidationTests(factory);
     });
 }
 

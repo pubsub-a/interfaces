@@ -36,7 +36,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "build-tests": "tsc -p tests",
-    "watch-tests": "tsc -p tests",
+    "watch-tests": "tsc -p tests --watch",
     "node-tests": "mocha tests/test.js",
     "browser-tests": "karma start",
     "test": "npm run build-tests && npm run node-tests && npm run browser-tests"

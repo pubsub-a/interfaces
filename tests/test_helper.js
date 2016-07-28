@@ -9,8 +9,20 @@ var randomString = function(length) {
   return text;
 };
 
+var randomValidChannelOrTopicName = function(length) {
+  length = length || 8;
+  var text = '';
+  var allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:_/-';
+
+  for(var i=0; i < length; i++)
+    text += allowedCharacters.charAt(Math.floor(Math.random() * allowedCharacters.length));
+
+  return text;
+};
+
 if (typeof window === "undefined") {
     module.exports = {
-        randomString: randomString
+        randomString: randomString,
+        randomValidChannelOrTopicName: randomValidChannelOrTopicName
     };
 }
