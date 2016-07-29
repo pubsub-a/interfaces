@@ -79,13 +79,48 @@ var executeStringValidationTests = (factory) => {
             });
         });
 
+        it("should make sure a topic can only be of type string", () => {
+            expect(() => channel.publish(undefined, "foo")).to.throw();
+            expect(() => channel.publish(null, "foo")).to.throw();
+            expect(() => channel.publish({}, "foo")).to.throw();
+            expect(() => channel.publish([], "foo")).to.throw();
+            expect(() => channel.publish(['a'], "foo")).to.throw();
+
+            const empty = () => void 0;
+            expect(() => channel.subscribe(undefined, empty)).to.throw();
+            expect(() => channel.subscribe(null, empty)).to.throw();
+            expect(() => channel.subscribe({}, empty)).to.throw();
+            expect(() => channel.subscribe([], empty)).to.throw();
+            expect(() => channel.subscribe(['a'], empty)).to.throw();
+        });
+
+        it("should make sure a channel name can consist of valid characters and be between 1 to 255 characters long", (done) => {
+            let topic_generation_publish = (length: number) => {
+                const topic_name = randomValidChannelOrTopicName(length);
+                channel.publish(topic_name);
+            };
+            let topic_generation_subscribe = (length: number) => {
+                const topic_name = randomValidChannelOrTopicName(length);
+                channel.subscribe(topic_name, () => void 0);
+            };
+
+            Rx.Observable.range(1, 255).subscribe(length => {
+                expect(() => topic_generation_publish(length)).not.to.throw();
+                expect(() => topic_generation_subscribe(length)).not.to.throw();
+            }, undefined, done);
+        });
+
         it("should make sure a topic with allowed characters can be published to", () => {
             expect(() => channel.publish("Foobar1234_:/-")).not.to.throw();
+            expect(() => channel.subscribe("Foobar1234_:/-", () => void 0)).not.to.throw();
         });
 
         it("should make sure a topic with special sequence can be published to", () => {
             expect(() => channel.publish("Foobar_$_Foobar")).not.to.throw();
             expect(() => channel.publish("Foobar_%_Foobar")).not.to.throw();
+
+            expect(() => channel.subscribe("Foobar_$_Foobar", () => void 0)).not.to.throw();
+            expect(() => channel.subscribe("Foobar_%_Foobar", () => void 0)).not.to.throw();
         });
 
     });
