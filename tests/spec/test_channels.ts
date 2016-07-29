@@ -1,6 +1,6 @@
 
 if (typeof window === "undefined") {
-    var c = require("chai");
+    let c = require("chai");
     var expect = c.expect;
     var Rx = require('rxjs/Rx');
 }
@@ -25,7 +25,7 @@ const executeChannelTests = (factory) => {
         }
 
         it("should create a channel asynchronously", function(done) {
-            var channel;
+            let channel;
 
             pubsub.channel("foo", function(chan) {
                 expectToBeAChannel(chan);
@@ -34,9 +34,9 @@ const executeChannelTests = (factory) => {
         });
 
         it("should create a channel synchronously and return a promise", function() {
-            var channel;
+            let channel;
 
-            var promise = pubsub.channel("foo");
+            let promise = pubsub.channel("foo");
             expect(promise).to.be.ok;
             expect(promise.then).to.be.a("function");
             expect(promise.catch).to.be.a("function");
@@ -44,9 +44,9 @@ const executeChannelTests = (factory) => {
         });
 
         it("if the .channel() returns a promise, it should resolve with the channel", function(done) {
-            var channel;
+            let channel;
 
-            var promise = pubsub.channel("foo");
+            let promise = pubsub.channel("foo");
 
             promise.then(function(channel) {
                 expectToBeAChannel(channel);
@@ -56,9 +56,9 @@ const executeChannelTests = (factory) => {
         });
 
         it("should not share pubsub data between two channels of different name", function(done) {
-            var channel1, channel2;
-            var channel1_ready = new Rx.AsyncSubject();
-            var channel2_ready = new Rx.AsyncSubject();
+            let channel1, channel2;
+            let channel1_ready = new Rx.AsyncSubject();
+            let channel2_ready = new Rx.AsyncSubject();
 
             // TODO use Promise/rxjs magic to start
             pubsub.channel("channel1", function(chan) {
@@ -74,7 +74,7 @@ const executeChannelTests = (factory) => {
 
                 channel1.subscribe("foo", function() {
                     expect(true).to.be.true;
-                    setTimeout(done, 500);
+                    done();
                 });
 
                 // if this is called, data is shared amgonst differently named channels so we fail
@@ -87,9 +87,9 @@ const executeChannelTests = (factory) => {
         });
 
         it("should have two channel instances with same name share the pubsub data", function(done) {
-            var channel1, channel2;
-            var channel1_ready = new Rx.AsyncSubject();
-            var channel2_ready = new Rx.AsyncSubject();
+            let channel1, channel2;
+            let channel1_ready = new Rx.AsyncSubject();
+            let channel2_ready = new Rx.AsyncSubject();
 
             pubsub.channel("foo", function(chan) {
                 channel1 = chan;

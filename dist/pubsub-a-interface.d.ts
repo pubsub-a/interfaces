@@ -5,15 +5,15 @@ export interface IPubSub {
     channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
 }
 /**
-@description includeIn function that has to be present on the implementation that implements
-  IPubSub.
-*/
+ *includeIn function that has to be present on the implementation that implements
+ * IPubSub.
+ */
 export interface IPubSubOperationsMixin {
     (obj: any, publish_name?: string, subscribe_name?: string): any;
 }
 /**
-@description Callback that fires when the main PubSub class is ready
-*/
+ * Callback that fires when the main PubSub class is ready
+ */
 export interface IPubSubStartCallback {
     (status: any, error: any): void;
 }
@@ -65,14 +65,14 @@ export interface disposeFunction {
     (SubscriptionDisposedCallback: any): number;
 }
 export interface SubscriptionDisposedCallback {
-    (number?: any): void;
+    (number?: any): any;
 }
 /**
 @description Argument that is passed to any .subscribe() function and
 executed upon publishes
 */
 export interface IObserverFunc<T> {
-    (payload: T): void;
+    (payload: T): any;
 }
 /**
  * Callback that fires after a subscription was received by the

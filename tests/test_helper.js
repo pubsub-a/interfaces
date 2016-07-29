@@ -11,7 +11,7 @@ var randomString = function(length) {
 
 var randomValidChannelOrTopicName = function(length) {
   if(!length)
-    length = Math.ceil(Math.random() * 255);
+    length = Math.ceil(Math.random() * 63);
   var text = '';
   var allowedCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789:_/-';
 
