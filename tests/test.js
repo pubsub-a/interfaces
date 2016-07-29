@@ -43,20 +43,24 @@ function runTests() {
         var executeCommonBasicPubSubTests;
         var executeChannelTests;
         var executeStringValidationTests;
+        var executeLinkedPubSubTests;
 
         if (typeof window === "undefined") {
             executeCommonBasicPubSubTests = require("./spec/test_common_basic_pubsub").executeCommonBasicPubSubTests;
             executeChannelTests = require("./spec/test_channels").executeChannelTests;
             executeStringValidationTests = require("./spec/test_string_validation").executeStringValidationTests;
+            executeLinkedPubSubTests = require("./spec/test_linked_pubsub").executeLinkedPubSubTests;
         } else {
             executeCommonBasicPubSubTests = window.executeCommonBasicPubSubTests;
             executeChannelTests = window.executeChannelTests;
             executeStringValidationTests = window.executeStringValidationTests;
+            executeLinkedPubSubTests = window.executeLinkedPubSubTests;
         }
 
         executeCommonBasicPubSubTests(factory);
         executeChannelTests(factory);
         executeStringValidationTests(factory);
+        executeLinkedPubSubTests(factory);
     });
 }
 
