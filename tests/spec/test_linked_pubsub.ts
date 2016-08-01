@@ -39,39 +39,44 @@ const executeLinkedPubSubTests = (factory) => {
         });
 
         it("should receive a simple publish across linked instances", done => {
-            let topic = "topic";
+            let topic = randomValidChannelOrTopicName();
             channel1.subscribe(topic, payload => {
                 expect(payload).to.equal("foobar");
                 done();
+            }, () => {
+                channel2.publish(topic, "foobar");
             });
-
-            channel2.publish(topic, "foobar");
         });
 
         it("should fire the local subscription only once if we locally publish", done => {
-            let topic = "topic";
+            let topic = randomValidChannelOrTopicName();
             channel1.subscribe(topic, payload => {
                 expect(payload).to.equal("foobar");
                 done();
+            }, () => {
+                channel1.publish(topic, "foobar");
             });
-            channel1.publish(topic, "foobar");
         });
 
-
+        // TODO vary subscription/publish/dispose timings to produce more memory load
         it("should handle tenthousand subscriptions simultaneously", function(done) {
             // set timeout to a minute for this test
             this.timeout(60000);
-            let numRuns = 100000;
-            let check = (payload) => { expect(payload).to.equal("foobar"); };
+            let numRuns = 10000;
+            const payload  = "foobar";
+            const check = (p) => { expect(p).to.equal(payload); };
+
             while(numRuns > 0) {
-                let subscription = channel1.subscribe("topic", check);
-                channel2.publish("topic", "foobar");
-                subscription.dispose();
+                const topic = randomValidChannelOrTopicName();
+                let subscription = channel1.subscribe(topic, check, () => {
+                    channel2.publish(topic, payload, () => {
+                        subscription.dispose();
+                    });
+                });
                 if (--numRuns == 0) {
-                    setTimeout(done, 2000);
+                    setTimeout(done, 1000);
                 }
             };
-
         });
 
     });
