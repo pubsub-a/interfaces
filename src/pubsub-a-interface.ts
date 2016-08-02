@@ -112,7 +112,7 @@ export interface IObserverFunc<T> {
  * fire after the server has successfully registered the subscription.
  */
 export interface ISubscriptionRegisteredCallback<T> {
-    (dispose: ISubscriptionToken, topic: string, subscription: IObserverFunc<T>);
+    (subscription: ISubscriptionToken, topic: string);
 }
 
 export interface IPublishReceivedCallback<T> {
