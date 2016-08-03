@@ -47,14 +47,14 @@ export interface IPubSubOperations {
     *   confirmed that the subscription was sucessfully put in place
     */
     subscribe<T>(topic: string, observer: IObserverFunc<T>,
-        callback?: ISubscriptionRegisteredCallback<T>): ISubscriptionToken;
+        callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
     */
     once<T>(topic: string, observer: IObserverFunc<T>,
-        callback?: ISubscriptionRegisteredCallback<T>): ISubscriptionToken;
+        callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
 
 }
 

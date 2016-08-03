@@ -31,12 +31,12 @@ export interface IPubSubOperations {
     * @param callback - If given, the callback will be executed after the server has
     *   confirmed that the subscription was sucessfully put in place
     */
-    subscribe<T>(topic: string, observer: IObserverFunc<T>, callback?: ISubscriptionRegisteredCallback<T>): ISubscriptionToken;
+    subscribe<T>(topic: string, observer: IObserverFunc<T>, callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
     */
-    once<T>(topic: string, observer: IObserverFunc<T>, callback?: ISubscriptionRegisteredCallback<T>): ISubscriptionToken;
+    once<T>(topic: string, observer: IObserverFunc<T>, callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
 }
 /**
  * A communication channel used for topic grouping.
@@ -80,7 +80,7 @@ export interface IObserverFunc<T> {
  * fire after the server has successfully registered the subscription.
  */
 export interface ISubscriptionRegisteredCallback<T> {
-    (dispose: ISubscriptionToken, topic: string, subscription: IObserverFunc<T>): any;
+    (subscription: ISubscriptionToken, topic: string): any;
 }
 export interface IPublishReceivedCallback<T> {
     (): any;
