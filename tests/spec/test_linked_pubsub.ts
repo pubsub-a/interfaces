@@ -50,6 +50,7 @@ const executeLinkedPubSubTests = (factory) => {
 
         it("should fire the local subscription only once if we locally publish", done => {
             let topic = randomValidChannelOrTopicName();
+            channel2.subscribe(topic, payload => undefined);
             channel1.subscribe(topic, payload => {
                 expect(payload).to.equal("foobar");
                 done();
@@ -68,7 +69,7 @@ const executeLinkedPubSubTests = (factory) => {
 
             while(numRuns > 0) {
                 const topic = randomValidChannelOrTopicName();
-                let subscription = channel1.subscribe(topic, check, () => {
+                channel1.subscribe(topic, check, (subscription) => {
                     channel2.publish(topic, payload, () => {
                         subscription.dispose();
                     });
@@ -78,7 +79,6 @@ const executeLinkedPubSubTests = (factory) => {
                 }
             };
         });
-
     });
 };
 

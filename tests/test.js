@@ -34,7 +34,7 @@ function runTests() {
     if (typeof window === "undefined") {
         facs = require("./test_harness").factories;
     } else {
-        // global variable in test_harness.js
+        // factories is a global variable in test_harness.js
         facs = factories;
     }
 
@@ -44,23 +44,27 @@ function runTests() {
         var executeChannelTests;
         var executeStringValidationTests;
         var executeLinkedPubSubTests;
+        var executeDisposeAndCleanupTests;
 
         if (typeof window === "undefined") {
             executeCommonBasicPubSubTests = require("./spec/test_common_basic_pubsub").executeCommonBasicPubSubTests;
             executeChannelTests = require("./spec/test_channels").executeChannelTests;
             executeStringValidationTests = require("./spec/test_string_validation").executeStringValidationTests;
             executeLinkedPubSubTests = require("./spec/test_linked_pubsub").executeLinkedPubSubTests;
+            executeDisposeAndCleanupTests = require("./spec/test_dispose_and_cleanup").executeDisposeAndCleanupTests;
         } else {
             executeCommonBasicPubSubTests = window.executeCommonBasicPubSubTests;
             executeChannelTests = window.executeChannelTests;
             executeStringValidationTests = window.executeStringValidationTests;
             executeLinkedPubSubTests = window.executeLinkedPubSubTests;
+            executeDisposeAndCleanupTests = window.executeDisposeAndCleanupTests;
         }
 
         executeCommonBasicPubSubTests(factory);
         executeChannelTests(factory);
         executeStringValidationTests(factory);
         executeLinkedPubSubTests(factory);
+        executeDisposeAndCleanupTests(factory);
     });
 }
 

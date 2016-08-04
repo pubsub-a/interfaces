@@ -3,6 +3,7 @@ if (typeof window === "undefined") {
     var expect = c.expect;
     var randomValidChannelOrTopicName = require('../test_helper').randomValidChannelOrTopicName;
     var Rx = require('rxjs/Rx');
+    var Promise = require("es6-promise").Promise;
 }
 
 const executeCommonBasicPubSubTests = (factory) => {
@@ -26,13 +27,14 @@ const executeCommonBasicPubSubTests = (factory) => {
 
 
         it('should accept a subscription and fire it when published', (done) => {
-            let subscriptionFunction = function() {
+            let subscriptionFunction = () => {
                 expect(true).to.be.true;
                 done();
             };
 
-            channel.subscribe('myTopic', subscriptionFunction);
-            channel.publish('myTopic', 1);
+            channel.subscribe('myTopic', subscriptionFunction).then(() => {
+                channel.publish('myTopic', 1);
+            });
 
         });
 
@@ -42,32 +44,28 @@ const executeCommonBasicPubSubTests = (factory) => {
             let promise2 = new Rx.AsyncSubject();
             let num_additions = 100;
 
-            let token1 = channel.subscribe('topic1', (value) => {
+            let p1 = channel.subscribe('topic1', (value) => {
                 count1 += value;
                 if (count1 >= num_additions)
                     promise1.complete();
             });
 
-            let token2 = channel.subscribe('topic2', (value) => {
+            let p2 = channel.subscribe('topic2', (value) => {
                 count2 += value;
                 if (count2 >= num_additions)
                     promise2.complete();
             });
 
-            let range = Rx.Observable.range(1, num_additions);
+            Promise.all([p1, p2]).then(() => {
+                Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, () => {
+                    expect(count1).to.equal(num_additions);
+                    expect(count2).to.equal(num_additions);
+                    done();
+                });
 
-            range.subscribe(function() {
-                channel.publish('topic1', 1);
-            });
-
-            range.subscribe(function() {
-                channel.publish('topic2', 1);
-            });
-
-            Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, () => {
-                expect(count1).to.equal(num_additions);
-                expect(count2).to.equal(num_additions);
-                done();
+                let range = Rx.Observable.range(1, num_additions);
+                range.subscribe(() => channel.publish('topic1', 1));
+                range.subscribe(() => channel.publish('topic2', 1));
             });
         });
 
@@ -76,16 +74,17 @@ const executeCommonBasicPubSubTests = (factory) => {
             let promise1 = new Rx.AsyncSubject();
             let promise2 = new Rx.AsyncSubject();
 
-
-            channel.subscribe('myTopic', () => {
+            let p1 = channel.subscribe('myTopic', () => {
                 promise1.complete();
             });
 
-            channel.subscribe('myTopic', () => {
+            let p2 = channel.subscribe('myTopic', () => {
                 promise2.complete();
             });
 
-            channel.publish('myTopic', 1);
+            Promise.all([p1, p2]).then(() => {
+                channel.publish('myTopic', 1);
+            });
 
             Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, () => {
                 expect(true).to.be.true;
@@ -96,16 +95,17 @@ const executeCommonBasicPubSubTests = (factory) => {
         it('should fire each subscription only once if multiple subscriptions are available', (done) => {
             let count = 0;
 
-            channel.subscribe('topic', () => count += 1);
-            channel.subscribe('topic', () => count += 1000);
+            const p1 = channel.subscribe('topic', () => count += 1);
+            const p2 = channel.subscribe('topic', () => count += 1000);
 
-            channel.publish('topic', true);
+            Promise.all([p1, p2]).then(() => channel.publish('topic', true));
 
             // each subscription should have fired exactly one time
+            // TODO use promises over setTimeout
             setTimeout(function() {
                 expect(count).to.equal(1001);
                 done();
-            }, 500);
+            }, 1000);
         });
 
         it('should execute the subscriptions in the order they were added', (done) => {
@@ -116,139 +116,58 @@ const executeCommonBasicPubSubTests = (factory) => {
                 done();
             });
 
-            channel.subscribe('myTopic', () => sequence.next(1));
-            channel.subscribe('myTopic', () => sequence.next(2));
-            channel.subscribe('myTopic', () => {
+            let p1 = channel.subscribe('myTopic', () => sequence.next(1));
+            let p2 = channel.subscribe('myTopic', () => sequence.next(2));
+            let p3 = channel.subscribe('myTopic', () => {
                 sequence.next(3);
                 sequence.complete();
             });
 
-            channel.publish('myTopic', 1);
+            Promise.all([p1, p2, p3]).then(() => channel.publish('myTopic', 1));
         });
 
         it('should return the correct subscription counts', () => {
-            let fn = function() { };
-            let token1 = channel.subscribe('myTopic', fn);
-            expect(token1.count).to.equal(1);
-            let token2 = channel.subscribe('myTopic', fn);
-            expect(token2.count).to.equal(2);
-            let token3 = channel.subscribe('myTopic', fn);
-            expect(token3.count).to.equal(3);
+            let fn = () => void 0;
+            let promise1 = channel.subscribe('myTopic', fn).then(t1 => {
+                expect(t1.count).to.equal(1);
+            });
+            let promise2 = channel.subscribe('myTopic', fn).then(t2 => {
+                expect(t2.count).to.equal(2);
+            });
+            let promise3 = channel.subscribe('myTopic', fn).then(t3 => {
+                expect(t3.count).to.equal(3);
+            });
 
-            let count = token1.dispose();
-            expect(count).to.equal(2);
-            count = token2.dispose();
-            expect(count).to.equal(1);
-            count = token3.dispose();
-            expect(count).to.equal(0);
-        });
-
-        it('should trigger a subscribe of a different channel instance but same channel name', (done) => {
-            let channel_name = randomValidChannelOrTopicName();
-
-            pubsub.channel(channel_name, function(channel1) {
-                pubsub.channel(channel_name, function(channel2) {
-
-                    channel1.subscribe('topic', function(value) {
-                        expect(value).to.be.true;
-                        done();
-                    });
-
-                    channel2.publish('topic', true);
-                });
+            Promise.all([promise1, promise2, promise3]).then(tokens => {
+                let [token1, token2, token3] = tokens;
+                let count = token1.dispose();
+                expect(count).to.equal(2);
+                count = token2.dispose();
+                expect(count).to.equal(1);
+                count = token3.dispose();
+                expect(count).to.equal(0);
             });
         });
 
-        it('should trigger subscribes on different channel instances with same channel name', (done) => {
-            let promise1 = new Rx.AsyncSubject();
-            let promise2 = new Rx.AsyncSubject();
-            let called1 = false;
-            let called2 = false;
-
-            let channel_name = randomValidChannelOrTopicName();
-
-            pubsub.channel(channel_name, (channel1) => {
-                pubsub.channel(channel_name, (channel2) => {
-
-                    channel1.subscribe('topic', (value) => {
-                        expect(value).to.be.true;
-                        called1 = true;
-                        promise1.complete();
-                    });
-
-                    channel2.subscribe('topic', (value) => {
-                        expect(value).to.be.true;
-                        called2 = true;
-                        promise2.complete();
-                    });
-
-                    channel2.publish('topic', true);
-
-                    Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, () => {
-                        expect(called1).to.be.true;
-                        expect(called2).to.be.true;
-                        done();
-                    });
-                });
+        it("should call the subscription registered callback for .subscribe() with the correct arguments", (done) => {
+            const topic = randomValidChannelOrTopicName();
+            const observer = () => void 0;
+            channel.subscribe(topic, observer, (subscription, subscribedTopic) => {
+                expect(subscription).to.be.ok;
+                expect(subscription.dispose).to.be.ok;
+                expect(subscribedTopic).to.equal(topic);
+                done();
             });
         });
 
-        describe('dispose and cleanup methods', () => {
-
-            it('should not dispose all identical subscriptions if a single one is disposed', (done) => {
-                let channel_name = randomValidChannelOrTopicName();
-
-                pubsub.channel(channel_name, function(channel) {
-
-                    let subscription1 = channel.subscribe('topic', function(arg) {
-                        expect(arg).to.be.ok;
-                        done();
-                    });
-
-                    let subscription2 = channel.subscribe('topic', function() { });
-                    subscription2.dispose();
-
-                    channel.publish('topic', true);
-                });
-
-            });
-
-            it('should throw an exception if the subscription is already disposed', (done) => {
-                let channel_name = randomValidChannelOrTopicName();
-                pubsub.channel(channel_name, function(channel) {
-
-                    let subscription = channel.subscribe('topic', function() { });
-
-                    expect(subscription.isDisposed).to.be.false;
-                    subscription.dispose();
-                    expect(subscription.isDisposed).to.be.true;
-                    expect(() => subscription.dispose()).to.throw();
-                    done();
-                });
-            });
-
-            it('should run the callback after disposal', (done) => {
-                let channel_name = randomValidChannelOrTopicName();
-                pubsub.channel(channel_name, (channel) => {
-
-                    let callback = (numSubscriptions) => {
-                        expect(true).to.be.true;
-                        // it should run after disposal so publishing shouldn't run our
-                        // subscription function
-                        channel.publish('topic', 1);
-                        setTimeout(function() {
-                            done();
-                        }, 500);
-                    };
-
-                    // fail if this subscription is triggered
-                    let subscription = channel.subscribe('topic', () => {
-                        expect(false).to.be.true;
-                        done();
-                    });
-
-                    subscription.dispose(callback);
-                });
+        it("should call the subscription registered callback for .once() with the correct arguments", (done) => {
+            const topic = "foobarlon"; //randomValidChannelOrTopicName();
+            const observer = () => void 0;
+            channel.once(topic, observer, (subscription, subscribedTopic) => {
+                expect(subscription).to.be.ok;
+                expect(subscription.dispose).to.be.ok;
+                expect(subscribedTopic).to.equal(topic);
+                done();
             });
         });
     });

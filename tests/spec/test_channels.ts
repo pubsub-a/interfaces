@@ -3,6 +3,7 @@ if (typeof window === "undefined") {
     let c = require("chai");
     var expect = c.expect;
     var Rx = require('rxjs/Rx');
+    var Promise = require("es6-promise").Promise;
 }
 
 const executeChannelTests = (factory) => {
@@ -72,17 +73,17 @@ const executeChannelTests = (factory) => {
 
             Rx.Observable.concat(channel1_ready, channel2_ready).subscribe(undefined, undefined, function() {
 
-                channel1.subscribe("foo", function() {
+                const p1 = channel1.subscribe("foo", () => {
                     expect(true).to.be.true;
                     done();
                 });
 
                 // if this is called, data is shared amgonst differently named channels so we fail
-                channel2.subscribe("foo", function() {
+                const p2 = channel2.subscribe("foo", () => {
                     expect(false).to.be.true;
                 });
 
-                channel1.publish("foo", {});
+                Promise.all([p1, p2]).then(() => channel1.publish("foo", {}));
             });
         });
 
@@ -91,23 +92,24 @@ const executeChannelTests = (factory) => {
             let channel1_ready = new Rx.AsyncSubject();
             let channel2_ready = new Rx.AsyncSubject();
 
-            pubsub.channel("foo", function(chan) {
+            pubsub.channel("foo", chan => {
                 channel1 = chan;
                 channel1_ready.complete();
             });
-            pubsub.channel("foo", function(chan) {
+            pubsub.channel("foo", chan => {
                 channel2 = chan;
                 channel2_ready.complete();
             });
 
-            Rx.Observable.concat(channel1_ready, channel2_ready).subscribe(undefined, undefined, function() {
+            Rx.Observable.concat(channel1_ready, channel2_ready).subscribe(undefined, undefined, () => {
 
                 channel1.subscribe("bar", function() {
                     expect(true).to.be.true;
                     done();
+                }).then(() => {
+                    channel2.publish("bar", {})
                 });
 
-                channel2.publish("bar", {});
             });
         });
     });
