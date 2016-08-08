@@ -9,7 +9,7 @@ var randomString = function(length) {
   return text;
 };
 
-var randomValidChannelOrTopicName = function(length) {
+var randomValidChannelOrTopicName = <any>function(length) {
   if(!length)
     length = Math.ceil(Math.random() * 63);
   var text = '';

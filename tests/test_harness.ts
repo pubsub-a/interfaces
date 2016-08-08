@@ -15,7 +15,7 @@ var factories = [];
 // }
 
 function registerPubSubImplementationFactory(factory) {
-    factories.push(factory);
+    (factories as any).push(factory);
 }
 
 if (typeof window === "undefined") {

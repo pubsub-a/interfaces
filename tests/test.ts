@@ -3,10 +3,8 @@
 @param getPubSubImplementation -  A factory function that should return a fresh (untouched) pubsub
   instance of type PubSub. This factory is called in the beforeEach() method before each test is run.
 */
-
-
 if (typeof window === "undefined") {
-    var registerPubSubImplementationFactory = require("./test_harness").registerPubSubImplementationFactory;
+    let registerPubSubImplementationFactory = require("./test_harness").registerPubSubImplementationFactory;
 
     try {
         // pubsub-micro
@@ -29,7 +27,7 @@ if (typeof window === "undefined") {
 }
 
 function runTests() {
-    var facs;
+    let facs;
 
     if (typeof window === "undefined") {
         facs = require("./test_harness").factories;
@@ -53,11 +51,12 @@ function runTests() {
             executeLinkedPubSubTests = require("./spec/test_linked_pubsub").executeLinkedPubSubTests;
             executeDisposeAndCleanupTests = require("./spec/test_dispose_and_cleanup").executeDisposeAndCleanupTests;
         } else {
-            executeCommonBasicPubSubTests = window.executeCommonBasicPubSubTests;
-            executeChannelTests = window.executeChannelTests;
-            executeStringValidationTests = window.executeStringValidationTests;
-            executeLinkedPubSubTests = window.executeLinkedPubSubTests;
-            executeDisposeAndCleanupTests = window.executeDisposeAndCleanupTests;
+            const win = window as any;
+            executeCommonBasicPubSubTests = win.executeCommonBasicPubSubTests;
+            executeChannelTests = win.executeChannelTests;
+            executeStringValidationTests = win.executeStringValidationTests;
+            executeLinkedPubSubTests = win.executeLinkedPubSubTests;
+            executeDisposeAndCleanupTests = win.executeDisposeAndCleanupTests;
         }
 
         executeCommonBasicPubSubTests(factory);
