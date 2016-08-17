@@ -122,7 +122,6 @@ var executeStringValidationTests = (factory) => {
             expect(() => channel.subscribe("Foobar_$_Foobar", () => void 0)).not.to.throw();
             expect(() => channel.subscribe("Foobar_%_Foobar", () => void 0)).not.to.throw();
         });
-
     });
 };
 
