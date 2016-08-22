@@ -47,6 +47,11 @@ const executeDisconnectTests = (factory) => {
         });
 
         it("should be able to subscribe to a disconnect event", function(done) {
+            if (!pubsub1.socket || !pubsub1.socket.id) {
+                this.skip();
+                return;
+            }
+
             const id1 = pubsub1.socket.id;
             const id2 = pubsub2.socket.id;
 
