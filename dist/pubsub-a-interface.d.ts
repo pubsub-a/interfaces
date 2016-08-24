@@ -1,4 +1,4 @@
-/// <reference types="es6-promise" />
+import { Promise } from "es6-promise";
 export interface IPubSub {
     start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
     stop(callback?: IPubSubStopCallback): Promise<void>;
