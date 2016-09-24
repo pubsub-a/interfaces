@@ -126,6 +126,57 @@ const executeCommonBasicPubSubTests = (factory) => {
             Promise.all([p1, p2, p3]).then(() => channel.publish('myTopic', 1));
         });
 
+        it("should fire a subscription if it is registered with .once()", (done) => {
+            const topic = randomValidChannelOrTopicName();
+            const promise =  channel.once(topic, (payload) => {
+                expect(payload).to.equal("foo");
+                done();
+            });
+
+            promise.then(subs => {
+                channel.publish(topic, "foo");
+            });
+        });
+
+
+        it("should fire a subscription only once if it is registered with .once()", (done) => {
+            const topic = randomValidChannelOrTopicName();
+            let counter = 0;
+            const promise = channel.once(topic, (payload) => {
+                expect(payload).to.equal("foo");
+                expect(counter).to.equal(0);
+                counter++;
+                done();
+            });
+            promise.then(subs => {
+                channel.publish(topic, "foo");
+                channel.publish(topic, "foo");
+            });
+        });
+
+        it("should set the subscription isDisposed to true after it got disposed", (done) => {
+            const topic = "topci";
+            let observerFinished;
+            let promise;
+
+            observerFinished = new Promise((resolve) => {
+                promise = channel.once(topic, (payload) => {
+                    expect(payload).to.equal("foo");
+                    resolve();
+                });
+            });
+
+            promise.then(subs => {
+                expect(subs.isDisposed).to.be.false;
+                channel.publish(topic, "foo");
+
+                observerFinished.then(() => {
+                    expect(subs.isDisposed).to.be.true;
+                    done();
+                });
+            });
+        });
+
         it('should return the correct subscription counts', () => {
             let fn = () => void 0;
             let promise1 = channel.subscribe('myTopic', fn).then(t1 => {
@@ -161,7 +212,7 @@ const executeCommonBasicPubSubTests = (factory) => {
         });
 
         it("should call the subscription registered callback for .once() with the correct arguments", (done) => {
-            const topic = "foobarlon"; //randomValidChannelOrTopicName();
+            const topic = randomValidChannelOrTopicName();
             const observer = () => void 0;
             channel.once(topic, observer, (subscription, subscribedTopic) => {
                 expect(subscription).to.be.ok;
