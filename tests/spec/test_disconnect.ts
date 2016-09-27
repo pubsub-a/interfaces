@@ -47,13 +47,13 @@ const executeDisconnectTests = (factory) => {
         });
 
         it("should be able to subscribe to a disconnect event", function(done) {
-            if (!pubsub1.socket || !pubsub1.socket.id) {
+            if (!pubsub1.pubsub.socket || !pubsub1.pubsub.socket.id) {
                 this.skip();
                 return;
             }
 
-            const id1 = pubsub1.socket.id;
-            const id2 = pubsub2.socket.id;
+            const id1 = pubsub1.pubsub.socket.id;
+            const id2 = pubsub2.pubsub.socket.id;
 
             // client1 wants to be notified if client2 disconnects
             pubsub1.channel("__internal", (internalChannel) => {
