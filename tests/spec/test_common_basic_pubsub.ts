@@ -221,8 +221,25 @@ const executeCommonBasicPubSubTests = (factory) => {
                 done();
             });
         });
-    });
 
+        it("should make sure unhandled exceptions in an observer function won't throw an error in the pubsub implementation", done => {
+            const topic = randomValidChannelOrTopicName();
+            const observer = () => {
+                throw new Error("Expected error");
+            }
+
+            channel.subscribe(topic, observer).then(() => {
+                try {
+                    channel.publish(topic, "payload");
+                    expect(true).to.be.ok;
+                    done();
+                } catch (err) {
+                    expect(false).to.be.ok;
+                    done();
+                }
+            });
+        });
+    });
 }
 
 if (typeof window === "undefined") {
