@@ -25,11 +25,11 @@ export interface IPubSubOperationsMixin {
  * Callback that fires when the main PubSub class is ready
  */
 export interface IPubSubStartCallback {
-    (status: any, error: any): void;
+    (instance: IPubSub, error: any): void;
 }
 
 export interface IPubSubStopCallback {
-    (status: any, error: any);
+    (instance: IPubSub, error: any): void;
 }
 
 export interface IChannelReadyCallback {
