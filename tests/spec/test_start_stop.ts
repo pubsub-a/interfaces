@@ -6,7 +6,7 @@ if (typeof window === "undefined") {
 
 const executeStartStopTests = (factory) => {
 
-    describe(`['${factory.name}] should pass the common PubSub implementation tests `, () => {
+    describe(`['${factory.name}] should pass the start/stop implementation test`, () => {
 
         let pubsub;
 
