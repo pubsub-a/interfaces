@@ -53,6 +53,24 @@ const executeStartStopTests = (factory) => {
             });
         });
 
+        it("should trigger the stop callback after the pubsub was stopped", done => {
+            pubsub.start().then(() => {
+                pubsub.stop(() => {
+                    expect(true).to.be.ok;
+                    done();
+                })
+            })
+        })
+
+        it("should resolve the promise after the pubsub was stopped", done => {
+            pubsub.start().then(() => {
+                pubsub.stop().then(() => {
+                    expect(true).to.be.ok;
+                    done();
+                })
+            })
+        })
+
         it("should not be possible to publish/subscribe after the .stop function has been called", done => {
             const topic = randomValidChannelOrTopicName();
 
@@ -71,6 +89,19 @@ const executeStartStopTests = (factory) => {
                     done();
                 });
             });
+        });
+
+        it("should not be possible to create a channel if the .stop function has been called", done => {
+            const topic = randomValidChannelOrTopicName();
+
+            pubsub.start().then(() => {
+                pubsub.stop().then(() => {
+                    expect(() => {
+                        pubsub.channel(topic, () => void 0);
+                    }).to.throw();
+                });
+                done();
+            })
         });
     });
 }
