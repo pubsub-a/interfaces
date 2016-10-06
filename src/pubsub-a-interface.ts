@@ -11,20 +11,6 @@ export interface IPubSub {
     stop(callback?: IPubSubStopCallback): Promise<void>;
 
     channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
-
-    /**
-     * It is not possible to declare an interface member method as static in TypeScript - so bare in
-     * mind that any implementation must have this .includeIn() method here as static method
-     * includeIn: IPubSubOperationsMixin;
-     */
-}
-
-/**
- *includeIn function that has to be present on the implementation that implements
- * IPubSub.
- */
-export interface IPubSubOperationsMixin {
-    (obj: any, publish_name?: string, subscribe_name?: string): any;
 }
 
 /**
@@ -42,7 +28,11 @@ export interface IChannelReadyCallback {
     (channel: IChannel): void;
 }
 
-export interface IPubSubOperations {
+/**
+ * A communication channel used for topic grouping.
+ */
+export interface IChannel {
+    name: string;
 
     publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback): Promise<any>;
 
@@ -62,13 +52,6 @@ export interface IPubSubOperations {
     once<T>(topic: string, observer: IObserverFunc<T>,
         callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
 
-}
-
-/**
- * A communication channel used for topic grouping.
- */
-export interface IChannel extends IPubSubOperations {
-    name: string;
 }
 
 /**
