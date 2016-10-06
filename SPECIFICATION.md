@@ -3,13 +3,13 @@ PubSub/A Specification
 
 A statically typed interface definition containing various types and call signatures is included as
 TypeScript interfaces in this project and serve as normative reference in addition to this
-document. Additionally, a unit test suite is included in this project which also defines the
-behaviour of a correct implementation.
+document. Additionally, a unit test suite is avaible which also defines the behaviour of a correct
+implementation.
 
 Definitions
 -----------
 
-* `PubSub/A` - this specification proposal
+* `PubSub/A` - this specification
 * PubSubImplementation - an implementation implementing this specification
 
 
@@ -28,7 +28,7 @@ var instance2 = new PubSubImplementation();
 
 instance1.subscribe('topic', function() {
    // if we reach this, your implementation is faulty
-   throw Execption('implementation is faulty!'); 
+   throw Execption('implementation is faulty!');
 });
 
 instance2.publish('topic', {});
@@ -36,28 +36,30 @@ instance2.publish('topic', {});
 
 This does not apply to network enabled implementations where instances may exist across different
 machines. In networking scenarios, two instances on different machines are considered the same
-instance if they share the same backend server or URI string.
+instance if they share the same backend server, and may be identified by a unique string such as
+an URI endpoint.
 
 
 Asynchonous establishment of channels
 -------------------------------------
 
-Channels might be setup up asynchronously. Therefore any implementation must buffer published
-messages and publish them when the channel becomes ready.
+Channels are setup up asynchronously:
 
 ```javascript
 var pubsub = new PubSubImplementation();
 var channel;
 
-// synchronous usage of the API...
-channel = pubsub.channel('myChannel');
-channel.publish('topic', arg);
-
-// ...MUST BE equivalent to the following asynchronous usage
 pubsub.channel('myChannel', function(channel) {
-  channel.publish('topic', arg); 
+  channel.publish('topic', arg);
 });
+```
 
+`.channel()` also returns a Promise, so instead of a callback one can simply:
+
+```javascript
+pubsub.channel().then(function(channel) {
+  channel.publish('topic', arg);
+});
 ```
 
 !! WORK IN PROGRESS - MORE TO COME !!

@@ -1,14 +1,13 @@
 README
 =======
 
-PubSub/A is an interface proposal for libraries implementing the [Publish/Subscribe][pubsub-pattern]
+PubSub/A is an interface for libraries implementing the [Publish/Subscribe][pubsub-pattern]
 pattern (also often referred to as Observer pattern). The aim of PubSub/A is to provide a unified,
 asynchronous common API for pubsub (similiar to the Promise/A proposal that defines a unified API
 for promises).
 
 PubSub/A uses the so-called *topic-based Publish/Subscribe* with the additional concept of
-*channels* for grouping together topics. But besides string topics, it is also possible to use
-custom object instance (or DOM nodes) as message hubs.
+*channels* for grouping together topics.
 
 A [reference implementation written in TypeScript (but usable from plain JavaScript) is available
 here][reference-implementation].
@@ -27,29 +26,12 @@ pubsub.channel('mychannel', function(channel) {
 
     // subscribe
     channel.subscribe('myTopic', function(arg) {
-      console.log('I received a notification: ' + arg.message);
+        console.log('I received a notification: ' + arg.message);
     });
 
     // publish - you can pass any custom object as argument
     channel.publish('myTopic', { message: 'Hello world!' });
 });
-```
-
-### Object-instance based (no string topics)
-
-```javascript
-// use any object instance or DOM node you like
-var myObject = {};
-
-// add publish/subscribe functions to the object
-PubSubImplementation.includeIn(myObject);
-
-myObject.subscribe(function(arg) {
-  console.log('I received a notification: ' + arg.message);
-});
-
-// publish - you can pass any custom object as argument
-myObject.publish({ message: 'Hello world!' });
 ```
 
 Specification
