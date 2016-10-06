@@ -40,7 +40,7 @@ function runTests() {
 
         var executeCommonBasicPubSubTests;
         var executeChannelTests;
-        var executeStringValidationTests;
+        var executeSValidationTests;
         var executeLinkedPubSubTests;
         var executeDisposeAndCleanupTests;
         var executeDisconnectTests;
@@ -49,7 +49,7 @@ function runTests() {
         if (typeof window === "undefined") {
             executeCommonBasicPubSubTests = require("./spec/test_common_basic_pubsub").executeCommonBasicPubSubTests;
             executeChannelTests = require("./spec/test_channels").executeChannelTests;
-            executeStringValidationTests = require("./spec/test_string_validation").executeStringValidationTests;
+            executeValidationTests = require("./spec/test_validation").executeValidationTests;
             executeLinkedPubSubTests = require("./spec/test_linked_pubsub").executeLinkedPubSubTests;
             executeDisposeAndCleanupTests = require("./spec/test_dispose_and_cleanup").executeDisposeAndCleanupTests;
             executeDisconnectTests = require("./spec/test_disconnect").executeDisconnectTests;
@@ -59,7 +59,7 @@ function runTests() {
             const win = window as any;
             executeCommonBasicPubSubTests = win.executeCommonBasicPubSubTests;
             executeChannelTests = win.executeChannelTests;
-            executeStringValidationTests = win.executeStringValidationTests;
+            executeValidationTests = win.executeStringValidationTests;
             executeLinkedPubSubTests = win.executeLinkedPubSubTests;
             executeDisposeAndCleanupTests = win.executeDisposeAndCleanupTests;
             executeDisconnectTests = win.executeDisconnectTests;
@@ -69,7 +69,7 @@ function runTests() {
         executeStartStopTests(factory);
         executeCommonBasicPubSubTests(factory);
         executeChannelTests(factory);
-        executeStringValidationTests(factory);
+        executeValidationTests(factory);
         executeLinkedPubSubTests(factory);
         executeDisposeAndCleanupTests(factory);
         executeDisconnectTests(factory);

@@ -116,6 +116,6 @@ export interface ISubscriptionRegisteredCallback<T> {
 }
 
 export interface IPublishReceivedCallback<T> {
-    (): any;
+    (error: Error | undefined, status?: any): void;
 }
 

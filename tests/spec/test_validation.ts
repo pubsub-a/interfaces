@@ -5,7 +5,7 @@ if (typeof window === "undefined") {
     var randomValidChannelOrTopicName = require('../test_helper').randomValidChannelOrTopicName;
 }
 
-var executeStringValidationTests = (factory) => {
+var executeValidationTests = (factory) => {
     let pubsub;
 
     describe(`[${factory.name} Channel name tests`, () => {
@@ -122,11 +122,32 @@ var executeStringValidationTests = (factory) => {
             expect(() => channel.subscribe("Foobar_$_Foobar", () => void 0)).not.to.throw();
             expect(() => channel.subscribe("Foobar_%_Foobar", () => void 0)).not.to.throw();
         });
+
+        it("should be ok to publish a plain object", done => {
+            let plain_object = { data: "foo" };
+            expect(() => {
+                channel.publish(randomValidChannelOrTopicName(), plain_object);
+            }).not.to.throw();
+            done();
+        });
+
+        it("should only be allowed to publish a plain object", done => {
+            let non_plain_object = new class {
+                constructor() {
+                }
+            }();
+
+            expect(() => {
+                channel.publish(randomValidChannelOrTopicName(), non_plain_object);
+            }).to.throw();
+            done();
+        });
+
     });
 };
 
 if (typeof window === "undefined") {
     module.exports = {
-        executeStringValidationTests: executeStringValidationTests
+        executeValidationTests: executeValidationTests
     };
 }
