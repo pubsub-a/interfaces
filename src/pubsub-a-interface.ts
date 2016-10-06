@@ -38,7 +38,7 @@ export interface IChannelReadyCallback {
 
 export interface IPubSubOperations {
 
-    publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback<T>): void;
+    publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback): Promise<any>;
 
     /**
     * Subscribe an observer to a topic.
@@ -115,7 +115,7 @@ export interface ISubscriptionRegisteredCallback<T> {
     (subscription: ISubscriptionToken, topic: string);
 }
 
-export interface IPublishReceivedCallback<T> {
+export interface IPublishReceivedCallback {
     (error: Error | undefined, status?: any): void;
 }
 
