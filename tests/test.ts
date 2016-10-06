@@ -45,6 +45,7 @@ function runTests() {
         var executeDisposeAndCleanupTests;
         var executeDisconnectTests;
         var executeStartStopTests;
+        var executeHighLoadTests;
 
         if (typeof window === "undefined") {
             executeCommonBasicPubSubTests = require("./spec/test_common_basic_pubsub").executeCommonBasicPubSubTests;
@@ -54,7 +55,7 @@ function runTests() {
             executeDisposeAndCleanupTests = require("./spec/test_dispose_and_cleanup").executeDisposeAndCleanupTests;
             executeDisconnectTests = require("./spec/test_disconnect").executeDisconnectTests;
             executeStartStopTests = require("./spec/test_start_stop").executeStartStopTests;
-
+            executeHighLoadTests = require("./spec/test_highload").executeHighLoadTests;
         } else {
             const win = window as any;
             executeCommonBasicPubSubTests = win.executeCommonBasicPubSubTests;
@@ -64,6 +65,7 @@ function runTests() {
             executeDisposeAndCleanupTests = win.executeDisposeAndCleanupTests;
             executeDisconnectTests = win.executeDisconnectTests;
             executeStartStopTests = win.executeStartStopTests;
+            executeHighLoadTests = win.executeHighLoadTests;
         }
 
         executeStartStopTests(factory);
@@ -73,6 +75,7 @@ function runTests() {
         executeLinkedPubSubTests(factory);
         executeDisposeAndCleanupTests(factory);
         executeDisconnectTests(factory);
+        // executeHighLoadTests(factory);
     });
 }
 
