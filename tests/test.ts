@@ -59,7 +59,7 @@ function runTests() {
             const win = window as any;
             executeCommonBasicPubSubTests = win.executeCommonBasicPubSubTests;
             executeChannelTests = win.executeChannelTests;
-            executeValidationTests = win.executeStringValidationTests;
+            executeValidationTests = win.executeValidationTests;
             executeLinkedPubSubTests = win.executeLinkedPubSubTests;
             executeDisposeAndCleanupTests = win.executeDisposeAndCleanupTests;
             executeDisconnectTests = win.executeDisconnectTests;

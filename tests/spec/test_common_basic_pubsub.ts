@@ -239,6 +239,27 @@ const executeCommonBasicPubSubTests = (factory) => {
                 }
             });
         });
+
+        it("should make sure publish() triggers the callback", done => {
+            const topic = randomValidChannelOrTopicName();
+            channel.publish(topic, "foobar", () => {
+                expect(true).to.be.ok;
+                done();
+            });
+        });
+
+        it("should make sure publish() returns a promise that is triggered when succesfull", done => {
+            const topic = randomValidChannelOrTopicName();
+            const promise = channel.publish(topic, "foobar");
+
+            expect(promise).to.be.defined;
+            expect(promise.then).to.be.defined;
+
+            promise.then(() => {
+                expect(true).to.be.ok;
+                done();
+            });
+        });
     });
 }
 
