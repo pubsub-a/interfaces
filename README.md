@@ -57,15 +57,13 @@ Implementations
 Test suite
 ----------
 
-This project includes a number of unit tests (using Mocha/Chai and Karma) that can be used to verify
-compatibility with the spec. To add you implementation, add a reference to the `karma.conf.js` file
-and register a factory that returns your PubSubImplemenation and start Karma. For node.js tests, see the
-`tests/test.js` file for how to extend the test suite with your implementation.
+An [official test suite](https://github.com/pubsub-a-/pubsub-a-tests) is available to test your
+implementation for validity.
 
 
 Licensing
 ---------
 
-This project does not include any actual code that you could license (see the individual
-implementations for their licensing). The documentation and test suite contained in this project are
-licensed under the GNU AGPL v3.
+This project does not include any actual executable code that you could license (see the individual
+implementations for their licensing). The documentation and interface definitions in this project are
+licensed under MIT license (see LICENSE) file.
