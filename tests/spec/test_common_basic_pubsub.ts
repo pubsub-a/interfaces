@@ -69,27 +69,22 @@ const executeCommonBasicPubSubTests = (factory) => {
             });
         });
 
-        it('should fire multiple subscriptions', (done) => {
+        it('should fire multiple subscriptions', () => {
+            let p1, p2;
 
-            let promise1 = new Rx.AsyncSubject();
-            let promise2 = new Rx.AsyncSubject();
-
-            let p1 = channel.subscribe('myTopic', () => {
-                promise1.complete();
+            let promise1 = new Promise((resolve, reject) => {
+                p1 = channel.subscribe('myTopic', resolve);
             });
 
-            let p2 = channel.subscribe('myTopic', () => {
-                promise2.complete();
+            let promise2 = new Promise((resolve, reject) => {
+                p2 = channel.subscribe('myTopic', resolve);
             });
 
             Promise.all([p1, p2]).then(() => {
                 channel.publish('myTopic', 1);
             });
 
-            Rx.Observable.concat(promise1, promise2).subscribe(undefined, undefined, () => {
-                expect(true).to.be.true;
-                done();
-            });
+            return Promise.all([promise1, promise2]);
         });
 
         it('should fire each subscription only once if multiple subscriptions are available', (done) => {

@@ -2,7 +2,6 @@
 if (typeof window === "undefined") {
     let c = require("chai");
     var expect = c.expect;
-    var Rx = require('rxjs/Rx');
     var Promise = require("es6-promise").Promise;
 }
 
@@ -13,30 +12,24 @@ const executeDisconnectTests = (factory) => {
 
     describe(`[${factory.name}] should pass disconnect event tests`, () => {
 
-        beforeEach(done => {
+        beforeEach(() => {
             [ pubsub1, pubsub2 ] = factory.getLinkedPubSubImplementation(2);
 
-            let channel1_ready = new Rx.AsyncSubject();
-            let channel2_ready = new Rx.AsyncSubject();
+            const channel_name = "channel";
 
-            let channel_name = "channel";
-
-            pubsub1.start(pubsub => {
-                pubsub1.channel(channel_name, (chan) => {
+            const channel1_ready = pubsub1.start(pubsub => {
+                return pubsub1.channel(channel_name).then((chan) => {
                     channel1 = chan;
-                    channel1_ready.complete();
-                });
-            });
-            pubsub2.start(pubsub => {
-                pubsub2.channel(channel_name, (chan) => {
-                    channel2 = chan;
-                    channel2_ready.complete();
                 });
             });
 
-            Rx.Observable.concat(channel1_ready, channel2_ready).subscribe(undefined, undefined, () => {
-                done();
+            const channel2_ready  = pubsub2.start(pubsub => {
+                return pubsub2.channel(channel_name).then((chan) => {
+                    channel2 = chan;
+                });
             });
+
+            return Promise.all([channel1_ready, channel2_ready]);
         });
 
         it("should be able to disconnect and the stop callback gets called", function(done) {

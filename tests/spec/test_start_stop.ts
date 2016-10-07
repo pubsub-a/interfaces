@@ -15,41 +15,39 @@ const executeStartStopTests = (factory) => {
             done();
         });
 
-        it("should pass the same pubsub instance as returned in the promise in the callback function", done => {
+        it("should pass the same pubsub instance as returned in the promise in the callback function", () => {
             let cb_pubsub;
             let promise = pubsub.start((instance, error) => {
                 cb_pubsub = instance;
             });
 
-            promise.then(pubsub => {
+            return promise.then(pubsub => {
                 expect(pubsub).to.equal(cb_pubsub);
-                done();
             });
         });
 
-        it("set an undefined error object if no error occurs", done => {
-            let promise = pubsub.start((instance, error) => {
+        it("set an undefined error object in callback if no error occurs", done => {
+            pubsub.start((instance, error) => {
                 expect(error).to.be.undefined;
                 done();
             });
         });
 
-        it("should throw an error if calling start() again after the stop() function", done => {
-            pubsub.start().then(() => {
-                pubsub.stop();
-                expect(() => pubsub.start()).to.throw();
-                done();
-            });
+        it("should throw an error if calling start() again after the stop() function", () => {
+            return pubsub.start()
+                .then(() => pubsub.stop())
+                .then(() => {
+                    expect(() => pubsub.start()).to.throw();
+                });
         });
 
-        it("should be allowed to call stop multiple times", done => {
-            pubsub.start().then(() => {
+        it("should be allowed to call stop multiple times", () => {
+            return pubsub.start().then(() => {
                 expect(() => {
                     pubsub.stop();
                     pubsub.stop();
                     pubsub.stop();
                 }).not.to.throw();
-                done();
             });
         });
 
@@ -62,20 +60,20 @@ const executeStartStopTests = (factory) => {
             })
         })
 
-        it("should resolve the promise after the pubsub was stopped", done => {
-            pubsub.start().then(() => {
-                pubsub.stop().then(() => {
+        it("should resolve the promise after the pubsub was stopped", () => {
+            return pubsub.start()
+                .then(() => pubsub.stop())
+                .then(() => {
                     expect(true).to.be.ok;
-                    done();
-                })
-            })
+                });
         })
 
-        it("should not be possible to publish/subscribe after the .stop function has been called", done => {
+        it("should not be possible to publish/subscribe after the .stop function has been called", () => {
             const topic = randomValidChannelOrTopicName();
 
-            pubsub.start().then(() => {
-                pubsub.channel(topic).then(channel => {
+            return pubsub.start()
+                .then(() => pubsub.channel(topic))
+                .then(channel => {
                     pubsub.stop();
 
                     expect(() => {
@@ -85,23 +83,19 @@ const executeStartStopTests = (factory) => {
                     expect(() => {
                         channel.subscribe(topic, () => void 0);
                     }).to.throw();
-
-                    done();
-                });
-            });
+                })
         });
 
-        it("should not be possible to create a channel if the .stop function has been called", done => {
+        it("should not be possible to create a channel if the .stop function has been called", () => {
             const topic = randomValidChannelOrTopicName();
 
-            pubsub.start().then(() => {
-                pubsub.stop().then(() => {
+            return pubsub.start()
+                .then(() => pubsub.stop())
+                .then(() => {
                     expect(() => {
                         pubsub.channel(topic, () => void 0);
                     }).to.throw();
                 });
-                done();
-            })
         });
     });
 }

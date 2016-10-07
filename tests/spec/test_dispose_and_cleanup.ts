@@ -26,7 +26,7 @@ const executeDisposeAndCleanupTests = (factory) => {
         });
 
         it('should not dispose all identical subscriptions if a single one is disposed', (done) => {
-            let channel_name = randomValidChannelOrTopicName();
+            const channel_name = randomValidChannelOrTopicName();
 
             pubsub.channel(channel_name, (chan) => {
 
@@ -43,38 +43,47 @@ const executeDisposeAndCleanupTests = (factory) => {
             });
         });
 
-        it('should throw an exception if the subscription is already disposed', (done) => {
-            let channel_name = randomValidChannelOrTopicName();
-            pubsub.channel(channel_name, (chan) => {
+        it('should throw an exception if the subscription is already disposed', () => {
+            const channel_name = randomValidChannelOrTopicName();
+            return pubsub.channel(channel_name).then(chan => {
 
-                chan.subscribe('topic', () => void 0).then(subscription => {
+                return chan.subscribe('topic', () => void 0).then(subscription => {
                     expect(subscription.isDisposed).to.be.false;
                     subscription.dispose();
                     expect(subscription.isDisposed).to.be.true;
                     expect(() => subscription.dispose()).to.throw();
-                    done();
                 });
 
             });
         });
 
-        it('should run the callback after disposal', function(done) {
-            let channel_name = randomValidChannelOrTopicName();
+        it('should run the callback after disposal', done => {
+            const channel_name = randomValidChannelOrTopicName();
+            let throw_exception;
+            let finalize = () => {
+                if (throw_exception) throw throw_exception;
+                else done();
+            }
+
             pubsub.channel(channel_name, (channel) => {
 
                 let callback = () => {
                     expect(true).to.be.true;
                     // it should run after disposal so publishing shouldn't run our
                     // subscription function
-                    channel.publish('topic', 1);
-                    setTimeout(done, 500);
+                    channel.publish('topic', 1).then(() => {
+                        setTimeout(finalize, 500);
+                    });
                 };
 
                 // fail if this subscription is triggered
                 channel.subscribe('topic', () => {
-                    expect(false).to.be.true;
+                    // this is tricky: by definition, exceptions in the observer func are
+                    // swallowed - so any expect() calls that throw will be swallowed causing
+                    // this test not to fail so use this sideeffect for it
+                    throw_exception = () => new Error("Observer func was called");
                 }).then(subscription => {
-                    subscription.dispose(callback);
+                    // subscription.dispose(callback);
                 });
 
             });
