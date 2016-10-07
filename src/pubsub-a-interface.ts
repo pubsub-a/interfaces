@@ -61,7 +61,7 @@ export interface IChannel {
 export interface ISubscriptionToken {
 
     /* will remove the subscription */
-    dispose: (callback?: SubscriptionDisposedCallback) => number;
+    dispose(callback?: ISubscriptionDisposedCallback): Promise<number>;
 
     /**
      *Indicates whether this subscription was already dispose by calling .dispose().
@@ -76,15 +76,11 @@ export interface ISubscriptionToken {
     count: number;
 }
 
-export interface disposeFunction {
-    (SubscriptionDisposedCallback): number;
-}
-
-export interface SubscriptionDisposedCallback {
+export interface ISubscriptionDisposedCallback {
     /* callback once the subscription is disposed. Passes the number of remaining subscriptions.
       If a backend doesnt support that, the first argument should be undefined.
      */
-    (number?): any;
+    (number: number | undefined): void;
 }
 
 /**

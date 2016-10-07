@@ -149,49 +149,32 @@ const executeCommonBasicPubSubTests = (factory) => {
             });
         });
 
-        it("should set the subscription isDisposed to true after it got disposed", (done) => {
-            const topic = "topci";
-            let observerFinished;
-            let promise;
-
-            observerFinished = new Promise((resolve) => {
-                promise = channel.once(topic, (payload) => {
-                    expect(payload).to.equal("foo");
-                    resolve();
-                });
-            });
-
-            promise.then(subs => {
-                expect(subs.isDisposed).to.be.false;
-                channel.publish(topic, "foo");
-
-                observerFinished.then(() => {
-                    expect(subs.isDisposed).to.be.true;
-                    done();
-                });
-            });
-        });
-
         it('should return the correct subscription counts', () => {
             let fn = () => void 0;
             let promise1 = channel.subscribe('myTopic', fn).then(t1 => {
                 expect(t1.count).to.equal(1);
+                return t1;
             });
             let promise2 = channel.subscribe('myTopic', fn).then(t2 => {
                 expect(t2.count).to.equal(2);
+                return t2;
             });
             let promise3 = channel.subscribe('myTopic', fn).then(t3 => {
                 expect(t3.count).to.equal(3);
+                return t3;
             });
 
-            Promise.all([promise1, promise2, promise3]).then(tokens => {
+            return Promise.all([promise1, promise2, promise3]).then(tokens => {
                 let [token1, token2, token3] = tokens;
-                let count = token1.dispose();
-                expect(count).to.equal(2);
-                count = token2.dispose();
-                expect(count).to.equal(1);
-                count = token3.dispose();
-                expect(count).to.equal(0);
+                return token1.dispose().then(count => {
+                    expect(count).to.equal(2);
+                    return token2.dispose();
+                }).then(count => {
+                    expect(count).to.equal(1);
+                    return token3.dispose();
+                }).then(count => {
+                    expect(count).to.equal(0);
+                });
             });
         });
 
