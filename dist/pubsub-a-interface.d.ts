@@ -1,4 +1,3 @@
-import { Promise } from "es6-promise";
 export interface IPubSub {
     /**
      * true when the .stop() call has executed (resolved)

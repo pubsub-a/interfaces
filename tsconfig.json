@@ -5,7 +5,8 @@
         "sourceMap": false,
         "declaration": true,
         "module": "commonjs",
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "lib": ["es5", "es2015.promise" ]
     },
     "files": [
         "src/pubsub-a-interface.ts"

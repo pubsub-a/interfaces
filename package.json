@@ -14,8 +14,6 @@
   "main": "dist/pubsub-a-interface.js",
   "typings": "dist/pubsub-a-interface.d.ts",
   "devDependencies": {
-    "@types/node": "^4.0.30",
-    "es6-promise": "^3.3.1",
     "typescript": "^2.0.3"
   },
   "scripts": {
