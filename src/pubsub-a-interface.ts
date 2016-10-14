@@ -32,7 +32,7 @@ export interface IChannelReadyCallback {
 export interface IChannel {
     name: string;
 
-    publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback): Promise<any>;
+    publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback): Promise<void>;
 
     /**
     * Subscribe an observer to a topic.
