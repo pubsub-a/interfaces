@@ -60,10 +60,3 @@ Test suite
 An [official test suite](https://github.com/pubsub-a-/pubsub-a-tests) is available to test your
 implementation for validity.
 
-
-Licensing
----------
-
-This project does not include any actual executable code that you could license (see the individual
-implementations for their licensing). The documentation and interface definitions in this project are
-licensed under MIT license (see LICENSE) file.
