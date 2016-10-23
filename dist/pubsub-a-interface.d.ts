@@ -80,3 +80,32 @@ export interface ISubscriptionRegisteredCallback<T> {
 export interface IPublishReceivedCallback {
     (error: Error | undefined, status?: any): void;
 }
+/**
+ * Documentation: INTERNAL CHANNEL
+ * The reserved channel name '__internal' is reserved for special communication. Currently the
+ * following topics exist that have special role:
+ *
+ *    - "subscribe_disconnect" - Param: A clientId
+ *    - "unsubscribe_disconnect" - Param: A clientId
+ *
+ *      The above two can be used to be notified whenever a client disconnect from the server.
+ *      You have to know that client's clientId upfront and pass it as payload parameter. Upon
+ *      disconnection, another topic on the __internal channel is published to:
+ *
+ *    - "client_disconnect" - Param: The client's clientId that disconnected
+ *
+ *   IMPORTANT NOTE: For all PUBLISHES on the __internal channel the following message format
+ *                   interface must be used
+ *
+ */
+export interface InternalChannelMessage {
+    /**
+     * The actual parameter to pass (i.e. clientId for "subscribe_disconnect")
+     */
+    payload: any;
+    /**
+     * Any form of callback that signals that the operation required to process the internal
+     * message is complete (i.e. a subscription received at the server)
+     */
+    callback?: Function;
+}
