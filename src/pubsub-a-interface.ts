@@ -5,6 +5,11 @@ export interface IPubSub {
      */
     readonly isStopped: boolean;
 
+    /**
+     * A unique identifier that identifies a client
+     */
+    clientId: string;
+
     start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
     stop(callback?: IPubSubStopCallback): Promise<void>;
 

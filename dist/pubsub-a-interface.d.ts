@@ -3,6 +3,10 @@ export interface IPubSub {
      * true when the .stop() call has executed (resolved)
      */
     readonly isStopped: boolean;
+    /**
+     * A unique identifier that identifies a client
+     */
+    clientId: string;
     start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
     stop(callback?: IPubSubStopCallback): Promise<void>;
     channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
