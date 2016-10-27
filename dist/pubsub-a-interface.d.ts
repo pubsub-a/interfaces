@@ -109,3 +109,8 @@ export interface InternalChannelMessage {
      */
     callback?: Function;
 }
+export declare class InternalChannelTopic {
+    static CLIENT_DISCONNECT: string;
+    static SUBSCRIBE_DISCONNECT: string;
+    static UNSUBSCRIBE_DISCONNECT: string;
+}

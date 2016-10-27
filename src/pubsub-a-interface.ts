@@ -137,3 +137,9 @@ export interface InternalChannelMessage {
      */
     callback?: Function;
 }
+
+export class InternalChannelTopic {
+    static CLIENT_DISCONNECT = "client_disconnect";
+    static SUBSCRIBE_DISCONNECT = "subscribe_disconnect";
+    static UNSUBSCRIBE_DISCONNECT = "unsubscribe_disconnect";
+}
