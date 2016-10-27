@@ -9,6 +9,6 @@
         "lib": ["es5", "es2015.promise" ]
     },
     "files": [
-        "src/pubsub-a-interface.ts"
+        "src/pubsub-a-interfaces.ts"
     ]
 }
