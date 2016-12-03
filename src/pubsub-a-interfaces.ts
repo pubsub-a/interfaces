@@ -63,8 +63,12 @@ export interface IChannel {
  */
 export interface ISubscriptionToken {
 
-    /* will remove the subscription */
-    dispose(callback?: ISubscriptionDisposedCallback): Promise<number>;
+    /**
+     * Will remove the subscription.
+     * @returns     A promise that resolves with the subscription count, that is left for that topic.
+     *              If the subscription count is not supported by the backend, it should return undefined.
+     */
+    dispose(callback?: ISubscriptionDisposedCallback): Promise<number | undefined>;
 
     /**
      *Indicates whether this subscription was already dispose by calling .dispose().
