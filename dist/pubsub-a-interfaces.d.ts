@@ -60,9 +60,10 @@ export interface ISubscriptionToken {
     isDisposed: boolean;
     /**
      * Number of LOCAL subscriptions at the time of subscribing - minimum will be 1
-     * as the own subscription is counted in
+     * as the own subscription is counted in. If the backend does not support counting
+     * subscriptions, this should still be undefined.
      */
-    count: number;
+    count: number | undefined;
 }
 export interface ISubscriptionDisposedCallback {
     (number: number | undefined): void;
