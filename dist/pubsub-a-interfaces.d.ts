@@ -4,6 +4,10 @@ export interface IPubSub {
      */
     readonly isStopped: boolean;
     /**
+     * true when the pubsub instance has started
+     */
+    readonly isStarted: boolean;
+    /**
      * A unique identifier that identifies a client
      */
     clientId: string;
