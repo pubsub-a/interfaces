@@ -15,25 +15,10 @@ export interface IPubSub {
      */
     clientId: string;
 
-    start(callback?: IPubSubStartCallback, disconnect?: Function): Promise<IPubSub>;
-    stop(callback?: IPubSubStopCallback): Promise<void>;
+    start(disconnect?: Function): Promise<IPubSub>;
+    stop(): Promise<void>;
 
-    channel(name: string, callback?: IChannelReadyCallback): Promise<IChannel>;
-}
-
-/**
- * Callback that fires when the main PubSub class is ready
- */
-export interface IPubSubStartCallback {
-    (instance: IPubSub, error: any): void;
-}
-
-export interface IPubSubStopCallback {
-    (instance: IPubSub, error: any): void;
-}
-
-export interface IChannelReadyCallback {
-    (channel: IChannel): void;
+    channel(name: string): Promise<IChannel>;
 }
 
 /**
@@ -42,7 +27,7 @@ export interface IChannelReadyCallback {
 export interface IChannel {
     name: string;
 
-    publish<T>(topic: string, payload: T, callback?: IPublishReceivedCallback): Promise<void>;
+    publish<T>(topic: string, payload: T): Promise<any>;
 
     /**
     * Subscribe an observer to a topic.
@@ -50,15 +35,13 @@ export interface IChannel {
     * @param callback - If given, the callback will be executed after the server has
     *   confirmed that the subscription was sucessfully put in place
     */
-    subscribe<T>(topic: string, observer: IObserverFunc<T>,
-        callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
+    subscribe<T>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
     */
-    once<T>(topic: string, observer: IObserverFunc<T>,
-        callback?: ISubscriptionRegisteredCallback<T>): Promise<ISubscriptionToken>;
+    once<T>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
 
 }
 
@@ -73,7 +56,7 @@ export interface ISubscriptionToken {
      * @returns     A promise that resolves with the subscription count, that is left for that topic.
      *              If the subscription count is not supported by the backend, it should return undefined.
      */
-    dispose(callback?: ISubscriptionDisposedCallback): Promise<number | undefined>;
+    dispose(): Promise<number | undefined>;
 
     /**
      *Indicates whether this subscription was already dispose by calling .dispose().
@@ -89,32 +72,12 @@ export interface ISubscriptionToken {
     count: number | undefined;
 }
 
-export interface ISubscriptionDisposedCallback {
-    /* callback once the subscription is disposed. Passes the number of remaining subscriptions.
-      If a backend doesnt support that, the first argument should be undefined.
-     */
-    (number: number | undefined): void;
-}
-
 /**
 @description Argument that is passed to any .subscribe() function and
 executed upon publishes
 */
 export interface IObserverFunc<T> {
     (payload: T): any;
-}
-
-/**
- * Callback that fires after a subscription was received by the
- * main subscription instance. In networking environments, the callback will
- * fire after the server has successfully registered the subscription.
- */
-export interface ISubscriptionRegisteredCallback<T> {
-    (subscription: ISubscriptionToken, topic: string, error?: Error);
-}
-
-export interface IPublishReceivedCallback {
-    (error: Error | undefined, status?: any): void;
 }
 
 /**
