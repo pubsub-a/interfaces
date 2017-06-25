@@ -20,6 +20,7 @@ export interface IPubSub {
  */
 export interface IChannel {
     name: string;
+    pubsub: IPubSub;
     publish<T>(topic: string, payload: T): Promise<any>;
     /**
     * Subscribe an observer to a topic.
