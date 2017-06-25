@@ -8,6 +8,14 @@ export interface IPubSub {
      */
     readonly isStarted: boolean;
     /**
+     * Hook to be notified if the instance started
+     */
+    readonly onStart: Promise<void>;
+    /**
+     * Hook to be notified if the instance stoped (this might me regular stop or due to an error)
+     */
+    readonly onStop: Promise<void>;
+    /**
      * A unique identifier that identifies a client
      */
     clientId: string;
