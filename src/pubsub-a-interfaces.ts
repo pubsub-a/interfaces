@@ -16,9 +16,9 @@ export interface IPubSub {
     readonly onStart: Promise<void>;
 
     /**
-     * Hook to be notified if the instance stoped (this might me regular stop or due to an error)
+     * Hook to be notified if the instance stoped (this might me regular stop or due to an error).
      */
-    readonly onStop: Promise<void>;
+    readonly onStop: Promise<StopReason | undefined>;
 
     /**
      * A unique identifier that identifies a client
@@ -26,7 +26,7 @@ export interface IPubSub {
     clientId: string;
 
     start(disconnect?: Function): Promise<IPubSub>;
-    stop(): Promise<void>;
+    stop(reason?: StopReason): Promise<void>;
 
     channel(name: string): Promise<IChannel>;
 }
@@ -54,7 +54,6 @@ export interface IChannel {
      * done.
     */
     once<T>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
-
 }
 
 /**
@@ -85,9 +84,9 @@ export interface ISubscriptionToken {
 }
 
 /**
-@description Argument that is passed to any .subscribe() function and
-executed upon publishes
-*/
+ * @description Argument that is passed to any .subscribe() function and
+ * executed upon publishes
+ */
 export interface IObserverFunc<T> {
     (payload: T): any;
 }
@@ -123,8 +122,16 @@ export interface InternalChannelMessage {
     callback?: Function;
 }
 
+/**
+ * List of currently allowed topics for the __internal channel.
+ */
 export class InternalChannelTopic {
     static CLIENT_DISCONNECT = "client_disconnect";
     static SUBSCRIBE_DISCONNECT = "subscribe_disconnect";
     static UNSUBSCRIBE_DISCONNECT = "unsubscribe_disconnect";
 }
+
+/**
+ * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
+ */
+export type StopReason = "REMOTE_DISCONNECT" | "LOCAL_DISCONNECT" | "TIMEOUT" | "UNSPECIFIED_ERROR";
