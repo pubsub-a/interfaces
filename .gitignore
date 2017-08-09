@@ -1,6 +1,7 @@
 *.tmp
 *.swp
 .DS_Store
+dist/
 node_modules/
 dist/
 npm-debug.log

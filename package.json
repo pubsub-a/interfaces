@@ -7,7 +7,7 @@
     "dist"
   ],
   "main": "dist/pubsub-a-interfaces.js",
-  "typings": "dist/pubsub-a-interfaces.d.ts",
+  "types": "dist/pubsub-a-interfaces.d.ts",
   "devDependencies": {
     "typescript": "2.4.x"
   },
