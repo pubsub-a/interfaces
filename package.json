@@ -1,6 +1,6 @@
 {
-  "name": "pubsub-a-interfaces",
-  "private": false,
+  "name": "@dynalon/pubsub-a-interfaces",
+  "private": true,
   "version": "0.1.0",
   "description": "PubSub/A standard proposal interface definition",
   "license": "UNLICENSED",
