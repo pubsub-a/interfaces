@@ -9,7 +9,7 @@
   "main": "dist/pubsub-a-interfaces.js",
   "types": "dist/pubsub-a-interfaces.d.ts",
   "devDependencies": {
-    "typescript": "2.4.x"
+    "typescript": "2.5.x"
   },
   "scripts": {
     "build": "tsc",
