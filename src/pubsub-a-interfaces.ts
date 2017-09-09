@@ -47,13 +47,13 @@ export interface IChannel {
     * @param callback - If given, the callback will be executed after the server has
     *   confirmed that the subscription was sucessfully put in place
     */
-    subscribe<T>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
+    subscribe<T = any>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
     */
-    once<T>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
+    once<T = any>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
 }
 
 /**
