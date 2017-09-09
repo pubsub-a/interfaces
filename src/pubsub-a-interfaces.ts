@@ -135,3 +135,26 @@ export class InternalChannelTopic {
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
  */
 export type StopReason = "REMOTE_DISCONNECT" | "LOCAL_DISCONNECT" | "TIMEOUT" | "UNSPECIFIED_ERROR";
+
+/**
+ * Only used for spec validation / testing. Any implementation must expose this factory for the unit
+ * tests to test the implementation
+ */
+
+export interface ImplementationFactory {
+    /**
+     * A string identifier to the implementation name.
+     */
+    name: string;
+
+    /**
+     * Returns a single instance
+     */
+    getPubSubImplementation: () => IPubSub;
+
+    /**
+     * Returns a number of IPubSub instances that are linked, i.e. where each publish will trigger
+     * the corresponding subscribe on all other instances.
+     */
+    getLinkedPubSubImplementation: (numInstances: number) => IPubSub[];
+}
