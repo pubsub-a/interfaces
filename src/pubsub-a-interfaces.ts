@@ -18,15 +18,15 @@ export interface IPubSub {
     /**
      * Hook to be notified if the instance stoped (this might me regular stop or due to an error).
      */
-    readonly onStop: Promise<StopReason | undefined>;
+    readonly onStop: Promise<StopStatus>;
 
     /**
      * A unique identifier that identifies a client
      */
     clientId: string;
 
-    start(disconnect?: Function): Promise<IPubSub>;
-    stop(reason?: StopReason): Promise<void>;
+    start(): Promise<IPubSub>;
+    stop(status: StopStatus): Promise<void>;
 
     channel(name: string): Promise<IChannel>;
 }
@@ -134,7 +134,12 @@ export class InternalChannelTopic {
 /**
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
  */
-export type StopReason = "REMOTE_DISCONNECT" | "LOCAL_DISCONNECT" | "TIMEOUT" | "UNSPECIFIED_ERROR";
+export type StopReason = "REMOTE_DISCONNECT" | "LOCAL_DISCONNECT" | "UNSPECIFIED_ERROR";
+
+export interface StopStatus {
+    reason: StopReason;
+    additionalInfo?: string;
+}
 
 /**
  * Only used for spec validation / testing. Any implementation must expose this factory for the unit
