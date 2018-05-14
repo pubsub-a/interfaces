@@ -134,7 +134,7 @@ export class InternalChannelTopic {
 /**
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
  */
-export type StopReason = "REMOTE_DISCONNECT" | "LOCAL_DISCONNECT" | "UNSPECIFIED_ERROR";
+export type StopReason = "REMOTE_DISCONNECT" | "CONNECT_FAILURE" | "LOCAL_DISCONNECT" | "UNSPECIFIED_ERROR";
 
 export interface StopStatus {
     reason: StopReason;
