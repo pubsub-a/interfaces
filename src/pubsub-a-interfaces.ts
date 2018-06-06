@@ -28,8 +28,10 @@ export interface PubSub {
     start(): Promise<PubSub>;
     stop(status: StopStatus): Promise<void>;
 
-    channel(name: string): Promise<Channel>;
+    channel<TName extends string>(name: TName): Promise<ChannelType<TName>>;
 }
+
+export type ChannelType<TName extends string> = TName extends "__internal" ? InternalChannel : Channel;
 
 /**
  * A communication channel used for topic grouping.
@@ -57,6 +59,19 @@ export interface Channel {
      * done.
     */
     once<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
+}
+
+// Pretty much same as a regular channel but with fixed name, payload/topic pairs for reserved topics
+export interface InternalChannel {
+    readonly name: "__internal";
+
+    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalChannelMessage<TTopic>): Promise<any>;
+
+    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalChannelMessage<TTopic>>)
+        : Promise<SubscriptionToken>;
+
+    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalChannelMessage<TTopic>>)
+        : Promise<SubscriptionToken>;
 }
 
 /**
@@ -103,6 +118,8 @@ export type InternalChannelTopic =
     | "SUBSCRIBE_DISCONNECT"
     | "UNSUBSCRIBE_DISCONNECT"
     | "DISCONNECT_REASON"
+    // implementation may have other topics not part of the standard
+    | string
 
 /**
  * Maps the type of the payload of the message based on the string topic of the message
@@ -139,8 +156,8 @@ export type InternalMessagePayloadType<T extends InternalChannelTopic> =
      */
     T extends "DISCONNECT_REASON" ? string :
 
-    /** No other types allow beyond this point */
-    never;
+    /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
+    any;
 
 export interface InternalChannelMessage<TInternalTopic extends InternalChannelTopic> {
     /**
