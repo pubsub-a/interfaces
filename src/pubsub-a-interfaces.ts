@@ -1,4 +1,4 @@
-export interface IPubSub {
+export interface PubSub {
 
     /**
      * true when the .stop() call has executed (resolved)
@@ -25,19 +25,22 @@ export interface IPubSub {
      */
     clientId: string;
 
-    start(): Promise<IPubSub>;
+    start(): Promise<PubSub>;
     stop(status: StopStatus): Promise<void>;
 
-    channel(name: string): Promise<IChannel>;
+    channel(name: string): Promise<Channel>;
 }
 
 /**
  * A communication channel used for topic grouping.
  */
-export interface IChannel {
-    name: string;
+export interface Channel {
+    readonly name: string;
 
-    pubsub: IPubSub;
+    /**
+     * A reference to the pubsub instance that channel belongs to
+     */
+    readonly pubsub: PubSub;
 
     publish<T>(topic: string, payload: T): Promise<any>;
 
@@ -47,20 +50,20 @@ export interface IChannel {
     * @param callback - If given, the callback will be executed after the server has
     *   confirmed that the subscription was sucessfully put in place
     */
-    subscribe<T = any>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
+    subscribe<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
     */
-    once<T = any>(topic: string, observer: IObserverFunc<T>): Promise<ISubscriptionToken>;
+    once<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
 }
 
 /**
  * Class that represents a subscription and can be used to remove the subscription and perform
  * cleanup.
  */
-export interface ISubscriptionToken {
+export interface SubscriptionToken {
 
     /**
      * Will remove the subscription.
@@ -70,7 +73,7 @@ export interface ISubscriptionToken {
     dispose(): Promise<number | undefined>;
 
     /**
-     *Indicates whether this subscription was already dispose by calling .dispose().
+     *Indicates whether this subscription was already disposed by calling .dispose().
      * Any subsequent calls to dispose() are an error and will result in an exception.
      */
     isDisposed: boolean;
@@ -78,7 +81,7 @@ export interface ISubscriptionToken {
     /**
      * Number of LOCAL subscriptions at the time of subscribing - minimum will be 1
      * as the own subscription is counted in. If the backend does not support counting
-     * subscriptions, this should still be undefined.
+     * subscriptions, this should be undefined.
      */
     count: number | undefined;
 }
@@ -87,54 +90,83 @@ export interface ISubscriptionToken {
  * @description Argument that is passed to any .subscribe() function and
  * executed upon publishes
  */
-export interface IObserverFunc<T> {
+export interface ObserverFunc<T> {
     (payload: T): any;
 }
 
 /**
- * Documentation: INTERNAL CHANNEL
- * The reserved channel name '__internal' is reserved for special communication. Currently the
- * following topics exist that have special role:
- *
- *    - "subscribe_disconnect" - Param: A clientId
- *    - "unsubscribe_disconnect" - Param: A clientId
- *
- *      The above two can be used to be notified whenever a client disconnect from the server.
- *      You have to know that client's clientId upfront and pass it as payload parameter. Upon
- *      disconnection, another topic on the __internal channel is published to:
- *
- *    - "client_disconnect" - Param: The client's clientId that disconnected
- *
- *   IMPORTANT NOTE: For all PUBLISHES on the __internal channel the following message format
- *                   interface must be used
- *
+ * List of currently allowed topics for the __internal channel. These are reserved topics to carry transport or
+ * meta information such as the link, server/connection state etc. See below for documentation on each topic.
  */
-export interface InternalChannelMessage {
+export type InternalChannelTopic =
+    | "CLIENT_DISCONNECT"
+    | "SUBSCRIBE_DISCONNECT"
+    | "UNSUBSCRIBE_DISCONNECT"
+    | "DISCONNECT_REASON"
+
+/**
+ * Maps the type of the payload of the message based on the string topic of the message
+ * (which inherently determines its payload type)
+ */
+export type InternalMessagePayloadType<T extends InternalChannelTopic> =
+    /**
+     * payload: A clientId.
+     * Publishing to this topic will let the subscribers know that a client by that id got
+     * disconnected.
+     */
+    T extends "CLIENT_DISCONNECT" ? string :
+
+    /**
+     * payload: A clientId.
+     * Publishing on this topic tells the server that we wan't to be informed
+     * if a client disconnects.
+     */
+    T extends "SUBSCRIBE_DISCONNECT" ? string :
+
+    /**
+     * payload: A clientId.
+     * Publishing on this topic tells the server that we are no longer interested if  client
+     * by this id disconnects and we do not want to receive any more "CLIENT_DISCONNECT" events
+     * for that client.
+     */
+    T extends "UNSUBSCRIBE_DISCONNECT" ? string :
+
+    /**
+     * payload: A string with detailed information
+     * Publishing on that topic tells a client more details about why a connection is to be terminated. After
+     * publishing on that topic, server MUST disconnect the client. Clients needs not to disconnect are react
+     * to this event in any way. Logging the reason somehow is recommended, however.
+     */
+    T extends "DISCONNECT_REASON" ? string :
+
+    /** No other types allow beyond this point */
+    never;
+
+export interface InternalChannelMessage<TInternalTopic extends InternalChannelTopic> {
     /**
      * The actual parameter to pass (i.e. clientId for "subscribe_disconnect")
      */
-    payload: any;
+    payload: InternalMessagePayloadType<TInternalTopic>;
 
     /**
      * Any form of callback that signals that the operation required to process the internal
      * message is complete (i.e. a subscription received at the server)
      */
-    callback?: Function;
+    callback?: () => void;
 }
 
-/**
- * List of currently allowed topics for the __internal channel.
- */
-export class InternalChannelTopic {
-    static CLIENT_DISCONNECT = "client_disconnect";
-    static SUBSCRIBE_DISCONNECT = "subscribe_disconnect";
-    static UNSUBSCRIBE_DISCONNECT = "unsubscribe_disconnect";
-}
+// A note on enums (numeric or strings): eunms actually result in emitted javascript code
+// using a string union type will not emit any .js code, but only show up in a .d.ts file!
+
 
 /**
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
  */
-export type StopReason = "REMOTE_DISCONNECT" | "CONNECT_FAILURE" | "LOCAL_DISCONNECT" | "UNSPECIFIED_ERROR";
+export type StopReason =
+    | "REMOTE_DISCONNECT"
+    | "CONNECT_FAILURE"
+    | "LOCAL_DISCONNECT"
+    | "UNSPECIFIED_ERROR"
 
 export interface StopStatus {
     reason: StopReason;
@@ -145,7 +177,6 @@ export interface StopStatus {
  * Only used for spec validation / testing. Any implementation must expose this factory for the unit
  * tests to test the implementation
  */
-
 export interface ImplementationFactory {
     /**
      * A string identifier to the implementation name.
@@ -155,11 +186,11 @@ export interface ImplementationFactory {
     /**
      * Returns a single instance
      */
-    getPubSubImplementation: () => IPubSub;
+    getPubSubImplementation: () => PubSub;
 
     /**
-     * Returns a number of IPubSub instances that are linked, i.e. where each publish will trigger
+     * Returns a number of PubSub instances that are linked, i.e. where each publish will trigger
      * the corresponding subscribe on all other instances.
      */
-    getLinkedPubSubImplementation: (numInstances: number) => IPubSub[];
+    getLinkedPubSubImplementation: (numInstances: number) => PubSub[];
 }
