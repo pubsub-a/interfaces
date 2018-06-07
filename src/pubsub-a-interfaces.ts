@@ -65,12 +65,13 @@ export interface Channel {
 export interface InternalChannel {
     readonly name: "__internal";
 
+    // TODO: eliminate Message wrapper with callback; use the returned Promise as an ack?
     publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalChannelMessage<TTopic>): Promise<any>;
 
-    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalChannelMessage<TTopic>>)
+    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessagePayloadType<TTopic>>)
         : Promise<SubscriptionToken>;
 
-    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalChannelMessage<TTopic>>)
+    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessagePayloadType<TTopic>>)
         : Promise<SubscriptionToken>;
 }
 
