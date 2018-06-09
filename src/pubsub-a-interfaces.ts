@@ -66,12 +66,12 @@ export interface InternalChannel {
     readonly name: "__internal";
 
     // TODO: eliminate Message wrapper with callback; use the returned Promise as an ack?
-    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalMessagePayloadType<TTopic>): Promise<any>;
+    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalMessageType<TTopic>): Promise<any>;
 
-    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessagePayloadType<TTopic>>)
+    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessageType<TTopic>>)
         : Promise<SubscriptionToken>;
 
-    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessagePayloadType<TTopic>>)
+    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessageType<TTopic>>)
         : Promise<SubscriptionToken>;
 }
 
@@ -119,14 +119,12 @@ export type InternalChannelTopic =
     | "SUBSCRIBE_DISCONNECT"
     | "UNSUBSCRIBE_DISCONNECT"
     | "DISCONNECT_REASON"
-    // implementation may have other topics not part of the standard
-    | string
 
 /**
  * Maps the type of the payload of the message based on the string topic of the message
  * (which inherently determines its payload type)
  */
-export type InternalMessagePayloadType<T extends InternalChannelTopic> =
+export type InternalMessageType<T extends InternalChannelTopic> =
     /**
      * payload: A clientId.
      * Publishing to this topic will let the subscribers know that a client by that id got
@@ -158,11 +156,11 @@ export type InternalMessagePayloadType<T extends InternalChannelTopic> =
     T extends "DISCONNECT_REASON" ? string :
 
     /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
-    any;
+    never;
+
 
 // A note on enums (numeric or strings): eunms actually result in emitted javascript code
 // using a string union type will not emit any .js code, but only show up in a .d.ts file!
-
 
 /**
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
