@@ -57,7 +57,7 @@ export interface Channel {
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
-    */
+     */
     once<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
 }
 
@@ -66,7 +66,7 @@ export interface InternalChannel {
     readonly name: "__internal";
 
     // TODO: eliminate Message wrapper with callback; use the returned Promise as an ack?
-    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalChannelMessage<TTopic>): Promise<any>;
+    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalMessagePayloadType<TTopic>): Promise<any>;
 
     subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessagePayloadType<TTopic>>)
         : Promise<SubscriptionToken>;
@@ -159,19 +159,6 @@ export type InternalMessagePayloadType<T extends InternalChannelTopic> =
 
     /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
     any;
-
-export interface InternalChannelMessage<TInternalTopic extends InternalChannelTopic> {
-    /**
-     * The actual parameter to pass (i.e. clientId for "subscribe_disconnect")
-     */
-    payload: InternalMessagePayloadType<TInternalTopic>;
-
-    /**
-     * Any form of callback that signals that the operation required to process the internal
-     * message is complete (i.e. a subscription received at the server)
-     */
-    callback?: () => void;
-}
 
 // A note on enums (numeric or strings): eunms actually result in emitted javascript code
 // using a string union type will not emit any .js code, but only show up in a .d.ts file!
