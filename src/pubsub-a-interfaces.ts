@@ -166,13 +166,45 @@ export type InternalMessageType<T extends InternalChannelTopic> =
  * When a PubSub instance stops, reasons should be given to allow error handling/retry logic etc.
  */
 export type StopReason =
+    /**
+     * When the remote ends terminates the connection
+     */
     | "REMOTE_DISCONNECT"
+
+    /**
+     * When a connection could never be made after .start()'ing a PubSub instance (i.e. closed port, timeout etc.)
+     */
     | "CONNECT_FAILURE"
+
+    /**
+     * When local end disconnects, i.e. by calling .stop()
+     */
     | "LOCAL_DISCONNECT"
+
+    /**
+     * When a timeout occured, i.e. the remote did not respond to pings or the connection was interrupted due to timeout
+     */
+    | "TIMEOUT"
+
+    /**
+     * Other Error occured. SHOULD set a code or additionalInfo field.
+     */
     | "UNSPECIFIED_ERROR"
 
 export interface StopStatus {
     reason: StopReason;
+
+    /**
+     * Optional codes to set upon error. Codes MUST follow these ranges:
+     * 001-099  Freely usable, but provides no semantic information about the error. Not recommended.
+     * 100-199  Immediate reconnect after disconnect is encouraged (i.e. server configuration reload, update)
+     * 200-299  Reconnect is encouraged after a reasonable grace period of a few minutes
+     * 300-399  Reconnect is discouraged, but encourage to try other servers in cluster/redirect info
+     * 400-499  Error occured, no information about reconnect encouragement
+     * 500-599  Error occured, disconnect encourages to NOT reconnect to this server (i.e. high load situation, permanent server shutdown)
+     * 600-999  Reserved, do not use.
+     */
+    code?: number;
     additionalInfo?: string;
 }
 
