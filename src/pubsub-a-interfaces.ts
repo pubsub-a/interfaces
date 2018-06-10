@@ -11,11 +11,6 @@ export interface PubSub {
     readonly isStarted: boolean;
 
     /**
-     * Hook to be notified if the instance started
-     */
-    readonly onStart: Promise<void>;
-
-    /**
      * Hook to be notified if the instance stoped (this might me regular stop or due to an error).
      */
     readonly onStop: Promise<StopStatus>;
@@ -118,7 +113,6 @@ export type InternalChannelTopic =
     | "CLIENT_DISCONNECT"
     | "SUBSCRIBE_DISCONNECT"
     | "UNSUBSCRIBE_DISCONNECT"
-    | "DISCONNECT_REASON"
 
 /**
  * Maps the type of the payload of the message based on the string topic of the message
@@ -146,14 +140,6 @@ export type InternalMessageType<T extends InternalChannelTopic> =
      * for that client.
      */
     T extends "UNSUBSCRIBE_DISCONNECT" ? string :
-
-    /**
-     * payload: A string with detailed information
-     * Publishing on that topic tells a client more details about why a connection is to be terminated. After
-     * publishing on that topic, server MUST disconnect the client. Clients needs not to disconnect are react
-     * to this event in any way. Logging the reason somehow is recommended, however.
-     */
-    T extends "DISCONNECT_REASON" ? string :
 
     /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
     never;
@@ -196,6 +182,7 @@ export interface StopStatus {
 
     /**
      * Optional codes to set upon error. Codes MUST follow these ranges:
+     * 000      To be used when the client disconnects voluntarily by calling .stop() with LOCAL_DISCONNECT
      * 001-099  Freely usable, but provides no semantic information about the error. Not recommended.
      * 100-199  Immediate reconnect after disconnect is encouraged (i.e. server configuration reload, update)
      * 200-299  Reconnect is encouraged after a reasonable grace period of a few minutes
