@@ -6,7 +6,8 @@ export interface PubSub {
     readonly isStopped: boolean;
 
     /**
-     * true when the pubsub instance has started
+     * true when the pubsub instance has started, immediately after .start() has been called. Whether or not a connection
+     * to a backend system is successful, is not relevant.
      */
     readonly isStarted: boolean;
 
@@ -15,13 +16,14 @@ export interface PubSub {
      */
     readonly onStop: Promise<StopStatus>;
 
+    // TODO: can this be readonly? Is this a random value or dependent on the socket?!?
     /**
-     * A unique identifier that identifies a client
+     * A unique identifier that identifies a client.
      */
     clientId: string;
 
     start(): Promise<PubSub>;
-    stop(status: StopStatus): Promise<void>;
+    stop(status?: StopStatus): Promise<void>;
 
     channel<TName extends string>(name: TName): Promise<ChannelType<TName>>;
 }
