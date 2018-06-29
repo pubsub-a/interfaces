@@ -197,6 +197,10 @@ export interface StopStatus {
     additionalInfo?: string;
 }
 
+export interface StopError extends Error {
+    status: StopStatus;
+}
+
 /**
  * Only used for spec validation / testing. Any implementation must expose this factory for the unit
  * tests to test the implementation
