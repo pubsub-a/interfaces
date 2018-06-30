@@ -13,6 +13,8 @@ export interface PubSub {
 
     /**
      * Hook to be notified if the instance stoped (this might me regular stop or due to an error).
+     * Resolves when the instance was stopped successfully.
+     * Rejects when there was an error while stopping the instance.
      */
     readonly onStop: Promise<StopStatus>;
 
@@ -22,7 +24,21 @@ export interface PubSub {
      */
     clientId: string;
 
+    /**
+     * Starts the PubSub instance.
+     * Resolves with the PubSub instance if starting (i.e. connecting to a remote server) was successfull.
+     * Rejects
+     */
     start(): Promise<PubSub>;
+
+    /**
+     * Stops an instance (i.e. might perform disconnects from remote servers). Immedediately after stopping the instance,
+     * the isStopped must be set to true. After a stop, all subscriptions MUST be * removed and any subsequent
+     * publishes arriving after a stop must fail (i.e. return a rejected promise)
+     *
+     * @param status A StopStatus with details about the stopping reason. If status is not given, it MUST be
+     *               set to { reason: "LOCAL_DISCONNECT", code: 0 }
+     */
     stop(status?: StopStatus): Promise<void>;
 
     channel<TName extends string>(name: TName): Promise<ChannelType<TName>>;
