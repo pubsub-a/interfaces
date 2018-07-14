@@ -103,7 +103,7 @@ export interface SubscriptionToken {
 
     /**
      *Indicates whether this subscription was already disposed by calling .dispose().
-     * Any subsequent calls to dispose() are an error and will result in an exception.
+     * Any subsequent calls to dispose() will have no effect.
      */
     isDisposed: boolean;
 
