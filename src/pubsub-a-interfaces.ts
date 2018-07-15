@@ -96,23 +96,15 @@ export interface SubscriptionToken {
 
     /**
      * Will remove the subscription.
-     * @returns     A promise that resolves with the subscription count, that is left for that topic.
-     *              If the subscription count is not supported by the backend, it should return undefined.
+     * @returns     A promise that resolves when all dispose work is completed
      */
-    dispose(): Promise<number | undefined>;
+    dispose(): Promise<void>;
 
     /**
-     *Indicates whether this subscription was already disposed by calling .dispose().
+     * Indicates whether this subscription was already disposed by calling .dispose().
      * Any subsequent calls to dispose() will have no effect.
      */
     isDisposed: boolean;
-
-    /**
-     * Number of LOCAL subscriptions at the time of subscribing - minimum will be 1
-     * as the own subscription is counted in. If the backend does not support counting
-     * subscriptions, this should be undefined.
-     */
-    count: number | undefined;
 }
 
 /**
