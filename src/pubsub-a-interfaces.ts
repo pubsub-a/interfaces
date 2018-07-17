@@ -88,6 +88,10 @@ export interface InternalChannel {
         : Promise<SubscriptionToken>;
 }
 
+export interface DisposeNotification {
+    (subscriptionCount: number | undefined): any;
+}
+
 /**
  * Class that represents a subscription and can be used to remove the subscription and perform
  * cleanup.
@@ -113,6 +117,19 @@ export interface SubscriptionToken {
      * subscriptions, this should be undefined.
      */
     count: number | undefined;
+
+    /**
+     * Add a notification function that will be called when the dispose is successfull
+     * @param disposeNotification A notification callback
+     */
+    add(disposeNotification: DisposeNotification): void;
+
+    /**
+     * Remove a notification function previously added via .add(). If the function is not or was not added, this is
+     * silently ignored (= no exception is thrown).
+     * @param disposeNotification The notification callback added via add()
+     */
+    remove(disposeNotification: DisposeNotification): void;
 }
 
 /**
