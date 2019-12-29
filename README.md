@@ -60,3 +60,7 @@ Test suite
 An [official test suite](https://github.com/pubsub-a-/pubsub-a-tests) is available to test your
 implementation for validity.
 
+License
+-------
+
+MIT.
