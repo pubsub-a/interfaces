@@ -1,12 +1,12 @@
 {
     "compilerOptions": {
-        "target": "ES5",
+        "target": "ES2015",
         "outDir": "dist",
         "sourceMap": false,
         "declaration": true,
         "module": "commonjs",
         "strict": true,
-        "lib": ["es5", "es2015.promise" ]
+        "lib": ["es2015", "ES2015.Promise" ]
     },
     "files": [
         "src/pubsub-a-interfaces.ts"

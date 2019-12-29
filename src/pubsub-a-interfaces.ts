@@ -1,5 +1,4 @@
 export interface PubSub {
-
     /**
      * true when the .stop() call has executed (resolved)
      */
@@ -60,11 +59,11 @@ export interface Channel {
     publish<T>(topic: string, payload: T): Promise<any>;
 
     /**
-    * Subscribe an observer to a topic.
-    *
-    * @param callback - If given, the callback will be executed after the server has
-    *   confirmed that the subscription was sucessfully put in place
-    */
+     * Subscribe an observer to a topic.
+     *
+     * @param callback - If given, the callback will be executed after the server has
+     *   confirmed that the subscription was sucessfully put in place
+     */
     subscribe<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
 
     /**
@@ -81,11 +80,15 @@ export interface InternalChannel {
     // TODO: eliminate Message wrapper with callback; use the returned Promise as an ack?
     publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalMessageType<TTopic>): Promise<any>;
 
-    subscribe<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessageType<TTopic>>)
-        : Promise<SubscriptionToken>;
+    subscribe<TTopic extends InternalChannelTopic>(
+        topic: TTopic,
+        observer: ObserverFunc<InternalMessageType<TTopic>>
+    ): Promise<SubscriptionToken>;
 
-    once<TTopic extends InternalChannelTopic>(topic: TTopic, observer: ObserverFunc<InternalMessageType<TTopic>>)
-        : Promise<SubscriptionToken>;
+    once<TTopic extends InternalChannelTopic>(
+        topic: TTopic,
+        observer: ObserverFunc<InternalMessageType<TTopic>>
+    ): Promise<SubscriptionToken>;
 }
 
 export interface DisposeNotification {
@@ -97,7 +100,6 @@ export interface DisposeNotification {
  * cleanup.
  */
 export interface SubscriptionToken {
-
     /**
      * Will remove the subscription.
      * @returns     A promise that resolves with the subscription count, that is left for that topic.
@@ -144,10 +146,7 @@ export interface ObserverFunc<T> {
  * List of currently allowed topics for the __internal channel. These are reserved topics to carry transport or
  * meta information such as the link, server/connection state etc. See below for documentation on each topic.
  */
-export type InternalChannelTopic =
-    | "CLIENT_DISCONNECT"
-    | "SUBSCRIBE_DISCONNECT"
-    | "UNSUBSCRIBE_DISCONNECT"
+export type InternalChannelTopic = "CLIENT_DISCONNECT" | "SUBSCRIBE_DISCONNECT" | "UNSUBSCRIBE_DISCONNECT";
 
 /**
  * Maps the type of the payload of the message based on the string topic of the message
@@ -159,26 +158,24 @@ export type InternalMessageType<T extends InternalChannelTopic> =
      * Publishing to this topic will let the subscribers know that a client by that id got
      * disconnected.
      */
-    T extends "CLIENT_DISCONNECT" ? string :
-
-    /**
-     * payload: A clientId.
-     * Publishing on this topic tells the server that we wan't to be informed
-     * if a client disconnects.
-     */
-    T extends "SUBSCRIBE_DISCONNECT" ? string :
-
-    /**
-     * payload: A clientId.
-     * Publishing on this topic tells the server that we are no longer interested if  client
-     * by this id disconnects and we do not want to receive any more "CLIENT_DISCONNECT" events
-     * for that client.
-     */
-    T extends "UNSUBSCRIBE_DISCONNECT" ? string :
-
-    /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
-    never;
-
+    T extends "CLIENT_DISCONNECT"
+        ? string
+          /**
+           * payload: A clientId.
+           * Publishing on this topic tells the server that we wan't to be informed
+           * if a client disconnects.
+           */
+        : T extends "SUBSCRIBE_DISCONNECT"
+        ? string
+          /**
+           * payload: A clientId.
+           * Publishing on this topic tells the server that we are no longer interested if  client
+           * by this id disconnects and we do not want to receive any more "CLIENT_DISCONNECT" events
+           * for that client.
+           */
+        : T extends "UNSUBSCRIBE_DISCONNECT"
+        ? string /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
+        : never;
 
 // A note on enums (numeric or strings): eunms actually result in emitted javascript code
 // using a string union type will not emit any .js code, but only show up in a .d.ts file!
@@ -210,7 +207,7 @@ export type StopReason =
     /**
      * Other Error occured. SHOULD set a code or additionalInfo field.
      */
-    | "UNSPECIFIED_ERROR"
+    | "UNSPECIFIED_ERROR";
 
 export interface StopStatus {
     reason: StopReason;
@@ -251,7 +248,7 @@ export interface ImplementationFactory {
 
     /**
      * Returns a number of PubSub instances that are linked, i.e. where each publish will trigger
-     * the corresponding subscribe on all other instances.
+     * the corresponding subscription on all other instances.
      */
     getLinkedPubSubImplementation: (numInstances: number) => PubSub[];
 }
