@@ -1,18 +1,22 @@
 {
-  "name": "@pubsub-a/interfaces",
-  "version": "0.7.0",
-  "description": "PubSub/A standard proposal interface definition",
-  "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "main": "dist/pubsub-a-interfaces.js",
-  "types": "dist/pubsub-a-interfaces.d.ts",
-  "devDependencies": {
-    "typescript": "^3.7.4"
-  },
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch"
-  }
+    "name": "@pubsub-a/interfaces",
+    "version": "0.7.0",
+    "description": "PubSub/A standard proposal interface definition",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "main": "dist/pubsub-a-interfaces.js",
+    "types": "dist/pubsub-a-interfaces.d.ts",
+    "devDependencies": {
+        "typescript": "^3.7.4"
+    },
+    "scripts": {
+        "build": "tsc",
+        "prettier-write": "prettier --write src/**/*.ts src/*.ts package.json tsconfig.json",
+        "watch": "tsc --watch"
+    },
+    "dependencies": {
+        "prettier": "^1.19.1"
+    }
 }

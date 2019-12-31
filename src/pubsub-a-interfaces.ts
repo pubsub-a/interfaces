@@ -148,6 +148,11 @@ export interface ObserverFunc<T> {
  */
 export type InternalChannelTopic = "CLIENT_DISCONNECT" | "SUBSCRIBE_DISCONNECT" | "UNSUBSCRIBE_DISCONNECT";
 
+export interface ClientDisconnectMessage {
+    clientId: string;
+    reason: "DISCONNECT" | "NOT_CONNECTED";
+}
+
 /**
  * Maps the type of the payload of the message based on the string topic of the message
  * (which inherently determines its payload type)
@@ -159,22 +164,24 @@ export type InternalMessageType<T extends InternalChannelTopic> =
      * disconnected.
      */
     T extends "CLIENT_DISCONNECT"
-        ? string
-          /**
-           * payload: A clientId.
+        ? /**
            * Publishing on this topic tells the server that we wan't to be informed
            * if a client disconnects.
            */
+          ClientDisconnectMessage
         : T extends "SUBSCRIBE_DISCONNECT"
-        ? string
-          /**
+        ? /**
            * payload: A clientId.
            * Publishing on this topic tells the server that we are no longer interested if  client
            * by this id disconnects and we do not want to receive any more "CLIENT_DISCONNECT" events
            * for that client.
            */
+          string
         : T extends "UNSUBSCRIBE_DISCONNECT"
-        ? string /** Implementations might chose other topic/payload fields. For above topics we enforce the type, though. */
+        ? /**
+           * Implementations might chose other topic/payload fields. For above topics we enforce the type, though.
+           */
+          string
         : never;
 
 // A note on enums (numeric or strings): eunms actually result in emitted javascript code
