@@ -48,7 +48,7 @@ export type ChannelType<TName extends string> = TName extends "__internal" ? Int
 /**
  * A communication channel used for topic grouping.
  */
-export interface Channel {
+export interface Channel<TMap extends {} = any> {
     readonly name: string;
 
     /**
@@ -56,7 +56,7 @@ export interface Channel {
      */
     readonly pubsub: PubSub;
 
-    publish<T>(topic: string, payload: T): Promise<any>;
+    publish<K extends keyof TMap>(topic: K, payload: TMap[K]): Promise<void>;
 
     /**
      * Subscribe an observer to a topic.
@@ -64,31 +64,32 @@ export interface Channel {
      * @param callback - If given, the callback will be executed after the server has
      *   confirmed that the subscription was sucessfully put in place
      */
-    subscribe<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
+    subscribe<K extends keyof TMap>(topic: K, observer: ObserverFunc<TMap[K]>): Promise<SubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
      */
-    once<T = any>(topic: string, observer: ObserverFunc<T>): Promise<SubscriptionToken>;
+    once<K extends keyof TMap>(topic: K, observer: ObserverFunc<TMap[K]>): Promise<SubscriptionToken>;
+}
+
+export interface ClientDisconnectMessage {
+    clientId: string;
+    reason: "DISCONNECT" | "NOT_CONNECTED";
+}
+
+/**
+ * The topic & types used for the special InternalChannel
+ */
+export interface InternalMessageMap {
+    CLIENT_DISCONNECT: ClientDisconnectMessage;
+    SUBSCRIBE_DISCONNECT: string;
+    UNSUBSCRIBE_DISCONNECT: string;
 }
 
 // Pretty much same as a regular channel but with fixed name, payload/topic pairs for reserved topics
-export interface InternalChannel {
+export interface InternalChannel extends Channel<InternalMessageMap> {
     readonly name: "__internal";
-
-    // TODO: eliminate Message wrapper with callback; use the returned Promise as an ack?
-    publish<TTopic extends InternalChannelTopic>(topic: TTopic, payload: InternalMessageType<TTopic>): Promise<any>;
-
-    subscribe<TTopic extends InternalChannelTopic>(
-        topic: TTopic,
-        observer: ObserverFunc<InternalMessageType<TTopic>>
-    ): Promise<SubscriptionToken>;
-
-    once<TTopic extends InternalChannelTopic>(
-        topic: TTopic,
-        observer: ObserverFunc<InternalMessageType<TTopic>>
-    ): Promise<SubscriptionToken>;
 }
 
 export interface DisposeNotification {
@@ -138,51 +139,7 @@ export interface SubscriptionToken {
  * @description Argument that is passed to any .subscribe() function and
  * executed upon publishes
  */
-export interface ObserverFunc<T> {
-    (payload: T): any;
-}
-
-/**
- * List of currently allowed topics for the __internal channel. These are reserved topics to carry transport or
- * meta information such as the link, server/connection state etc. See below for documentation on each topic.
- */
-export type InternalChannelTopic = "CLIENT_DISCONNECT" | "SUBSCRIBE_DISCONNECT" | "UNSUBSCRIBE_DISCONNECT";
-
-export interface ClientDisconnectMessage {
-    clientId: string;
-    reason: "DISCONNECT" | "NOT_CONNECTED";
-}
-
-/**
- * Maps the type of the payload of the message based on the string topic of the message
- * (which inherently determines its payload type)
- */
-export type InternalMessageType<T extends InternalChannelTopic> =
-    /**
-     * payload: A clientId.
-     * Publishing to this topic will let the subscribers know that a client by that id got
-     * disconnected.
-     */
-    T extends "CLIENT_DISCONNECT"
-        ? /**
-           * Publishing on this topic tells the server that we wan't to be informed
-           * if a client disconnects.
-           */
-          ClientDisconnectMessage
-        : T extends "SUBSCRIBE_DISCONNECT"
-        ? /**
-           * payload: A clientId.
-           * Publishing on this topic tells the server that we are no longer interested if  client
-           * by this id disconnects and we do not want to receive any more "CLIENT_DISCONNECT" events
-           * for that client.
-           */
-          string
-        : T extends "UNSUBSCRIBE_DISCONNECT"
-        ? /**
-           * Implementations might chose other topic/payload fields. For above topics we enforce the type, though.
-           */
-          string
-        : never;
+export type ObserverFunc<T> = (payload: T) => any;
 
 // A note on enums (numeric or strings): eunms actually result in emitted javascript code
 // using a string union type will not emit any .js code, but only show up in a .d.ts file!
