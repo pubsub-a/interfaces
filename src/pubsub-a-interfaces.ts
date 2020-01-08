@@ -51,11 +51,6 @@ export type ChannelType<TName extends string> = TName extends "__internal" ? Int
 export interface Channel<TMap extends {} = any> {
     readonly name: string;
 
-    /**
-     * A reference to the pubsub instance that channel belongs to
-     */
-    readonly pubsub: PubSub;
-
     publish<K extends keyof TMap>(topic: K, payload: TMap[K]): Promise<void>;
 
     /**
