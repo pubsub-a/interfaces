@@ -1,6 +1,6 @@
 {
     "name": "@pubsub-a/interfaces",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "description": "PubSub/A standard proposal interface definition",
     "license": "MIT",
     "files": [
