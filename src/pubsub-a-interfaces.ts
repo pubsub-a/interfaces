@@ -1,3 +1,6 @@
+import { ControlMessagePublishMap, ControlMessageSubscribeMap } from "./control-messages";
+export * from "./control-messages";
+
 export interface PubSub {
     /**
      * true when the .stop() call has executed (resolved)
@@ -43,7 +46,7 @@ export interface PubSub {
     channel<TName extends string>(name: TName): Promise<ChannelType<TName>>;
 }
 
-export type ChannelType<TName extends string> = TName extends "__internal" ? InternalChannel : Channel;
+export type ChannelType<TName extends string> = TName extends "__control" ? ControlChannel : Channel;
 
 /**
  * A communication channel used for topic grouping.
@@ -71,26 +74,9 @@ export interface Channel<TPublishMap extends {} = any, TSubscribeMap extends {} 
     once<K extends keyof TSubscribeMap>(topic: K, observer: ObserverFunc<TSubscribeMap[K]>): Promise<SubscriptionToken>;
 }
 
-export interface ClientDisconnectMessage {
-    clientId: string;
-    reason: "DISCONNECT" | "NOT_CONNECTED";
-}
-
-/**
- * The topic & types used for the special InternalChannel
- */
-export interface InternalMessagePublishMap {
-    SUBSCRIBE_DISCONNECT: string;
-    UNSUBSCRIBE_DISCONNECT: string;
-}
-
-export interface InternalMessageSubscribeMap {
-    CLIENT_DISCONNECT: ClientDisconnectMessage;
-}
-
 // Pretty much same as a regular channel but with fixed name, payload/topic pairs for reserved topics
-export interface InternalChannel extends Channel<InternalMessagePublishMap, InternalMessageSubscribeMap> {
-    readonly name: "__internal";
+export interface ControlChannel extends Channel<ControlMessagePublishMap, ControlMessageSubscribeMap> {
+    readonly name: "__control";
 }
 
 export interface DisposeNotification {
