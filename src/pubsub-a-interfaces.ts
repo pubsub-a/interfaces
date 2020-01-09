@@ -48,10 +48,10 @@ export type ChannelType<TName extends string> = TName extends "__internal" ? Int
 /**
  * A communication channel used for topic grouping.
  */
-export interface Channel<TMap extends {} = any> {
+export interface Channel<TPublishMap extends {} = any, TSubscribeMap extends {} = any> {
     readonly name: string;
 
-    publish<K extends keyof TMap>(topic: K, payload: TMap[K]): Promise<void>;
+    publish<K extends keyof TPublishMap>(topic: K, payload: TPublishMap[K]): Promise<any>;
 
     /**
      * Subscribe an observer to a topic.
@@ -59,13 +59,16 @@ export interface Channel<TMap extends {} = any> {
      * @param callback - If given, the callback will be executed after the server has
      *   confirmed that the subscription was sucessfully put in place
      */
-    subscribe<K extends keyof TMap>(topic: K, observer: ObserverFunc<TMap[K]>): Promise<SubscriptionToken>;
+    subscribe<K extends keyof TSubscribeMap>(
+        topic: K,
+        observer: ObserverFunc<TSubscribeMap[K]>
+    ): Promise<SubscriptionToken>;
 
     /**
      * Will subscribe an observer and immediately unsubscribe the observer after a single publication was
      * done.
      */
-    once<K extends keyof TMap>(topic: K, observer: ObserverFunc<TMap[K]>): Promise<SubscriptionToken>;
+    once<K extends keyof TSubscribeMap>(topic: K, observer: ObserverFunc<TSubscribeMap[K]>): Promise<SubscriptionToken>;
 }
 
 export interface ClientDisconnectMessage {
@@ -76,14 +79,17 @@ export interface ClientDisconnectMessage {
 /**
  * The topic & types used for the special InternalChannel
  */
-export interface InternalMessageMap {
-    CLIENT_DISCONNECT: ClientDisconnectMessage;
+export interface InternalMessagePublishMap {
     SUBSCRIBE_DISCONNECT: string;
     UNSUBSCRIBE_DISCONNECT: string;
 }
 
+export interface InternalMessageSubscribeMap {
+    CLIENT_DISCONNECT: ClientDisconnectMessage;
+}
+
 // Pretty much same as a regular channel but with fixed name, payload/topic pairs for reserved topics
-export interface InternalChannel extends Channel<InternalMessageMap> {
+export interface InternalChannel extends Channel<InternalMessagePublishMap, InternalMessageSubscribeMap> {
     readonly name: "__internal";
 }
 
