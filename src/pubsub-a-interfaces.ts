@@ -1,4 +1,4 @@
-import { ControlMessagePublishMap, ControlMessageSubscribeMap } from "./control-messages";
+import { ControlChannelPublishMap, ControlChannelSubscribeMap } from "./control-messages";
 export * from "./control-messages";
 
 export interface PubSub {
@@ -75,7 +75,7 @@ export interface Channel<TPublishMap extends {} = any, TSubscribeMap extends {} 
 }
 
 // Pretty much same as a regular channel but with fixed name, payload/topic pairs for reserved topics
-export interface ControlChannel extends Channel<ControlMessagePublishMap, ControlMessageSubscribeMap> {
+export interface ControlChannel extends Channel<ControlChannelPublishMap, ControlChannelSubscribeMap> {
     readonly name: "__control";
 }
 
